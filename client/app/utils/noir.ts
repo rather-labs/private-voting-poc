@@ -4,7 +4,7 @@ import type { CompiledCircuit, InputMap, ProofData } from '@noir-lang/types';
 import { UltraHonkBackend } from '@aztec/bb.js';
 import toast from "react-hot-toast";
 
-export async function generateProof(circuit: CompiledCircuit, inputs: InputMap, keccak = true ): Promise<ProofData> {
+export async function generateProof(circuit: CompiledCircuit, inputs: InputMap, keccak = false ): Promise<ProofData> {
   try {
     toast.loading("Generating noir circuit... ⏳", {duration: 1_000_000, id: "toast-message"});
     const noir = new Noir(circuit);

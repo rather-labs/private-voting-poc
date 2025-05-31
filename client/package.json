@@ -10,28 +10,27 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@aztec/bb.js": "0.86.0",
-    "@noir-lang/noir_js": "1.0.0-beta.6",
-    "@noir-lang/noir_wasm": "1.0.0-beta.6",
-    "@noir-lang/types": "1.0.0-beta.6",
+    "@aztec/bb.js": "0.82.2",
+    "@noir-lang/noir_js": "1.0.0-beta.3",
+    "@noir-lang/noir_wasm": "1.0.0-beta.3",
+    "@noir-lang/types": "1.0.0-beta.3",
     "msgpackr": "^1.11.2",
-    "next": "15.3.1",
+    "next": "^15.3.3",
     "next-auth": "^4.24.7",
-    "noir-jwt": "^0.4.5",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "noir-jwt": "^0.4.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-hot-toast": "^2.5.2",
     "viem": "^2.29.0"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "15.3.1",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.1.0",
     "tailwindcss": "^4",
+    "@tailwindcss/postcss": "^4",
     "typescript": "^5"
   }
 }
