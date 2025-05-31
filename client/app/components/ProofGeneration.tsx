@@ -25,6 +25,7 @@ export default function VotingProofGeneration() {
   const [isLoading, setIsLoading] = useState(false);
   const [isGeneratingProof, setIsGeneratingProof] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [electionId, setElectionId] = useState<string>("");
   const jwtInfo = useJWTInfo();
   const openIdClaims = jwtInfo?.idToken ? getOpenIDClaims(jwtInfo.idToken) : null;
 
@@ -33,6 +34,10 @@ export default function VotingProofGeneration() {
       try {
         setIsLoading(true);
         setError(null);
+
+        if (!electionId) {
+          throw new Error("Please enter an election ID");
+        }
 
         // Cast session to unknown first for safe type conversion
         const extendedSession = session as unknown as ExtendedSession;
@@ -84,9 +89,10 @@ export default function VotingProofGeneration() {
     try {
       setIsGeneratingProof(true);
       setError(null);
+      // Add election Id to inputs
+      inputs.election_id = Number(electionId);
       console.log("inputs", inputs);
       const generatedProof = await generateProof(JwtCircuitJSON as CompiledCircuit, inputs as InputMap);
-      //const generatedProof = await getProofFromFile(18);
       setProof(generatedProof);
     } catch (err: unknown) {
       console.error("Error generating proof:", err);
@@ -128,34 +134,50 @@ export default function VotingProofGeneration() {
               <p className="text-gray-600 mb-2">
                 {session ? "You are signed in" : "Sign in to start voting or create new polls"}
               </p>
-                            
+              
               {session && (
-                <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-                  <button
-                    type="button"
-                    onClick={handleShowToken}
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  >
-                    {showTokenInfo ? "Hide Token Info" : "Show Token Info"}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleToggleInputs}
-                    disabled={isLoading}
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
-                  >
-                    {isLoading ? "Loading..." : showInputs ? "Hide Noir Inputs" : "Get Noir Inputs"}
-                  </button>
-                  {inputs && (
+                <div className="flex flex-col items-center space-y-4">
+                  <div className="w-full max-w-md">
+                    <label htmlFor="election-id" className="block text-sm font-medium text-gray-700 mb-1">
+                      Election ID
+                    </label>
+                    <input
+                      type="text"
+                      id="election-id"
+                      value={electionId}
+                      onChange={(e) => setElectionId(e.target.value)}
+                      placeholder="Enter election ID"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                    />
+                  </div>
+                  
+                  <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
                     <button
                       type="button"
-                      onClick={generateNoirProof}
-                      disabled={isGeneratingProof}
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50"
+                      onClick={handleShowToken}
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
-                      {isGeneratingProof ? "Generating..." : "Generate Proof"}
+                      {showTokenInfo ? "Hide Token Info" : "Show Token Info"}
                     </button>
-                  )}
+                    <button
+                      type="button"
+                      onClick={handleToggleInputs}
+                      disabled={isLoading || !electionId}
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
+                    >
+                      {isLoading ? "Loading..." : showInputs ? "Hide Noir Inputs" : "Get Noir Inputs"}
+                    </button>
+                    {inputs && (
+                      <button
+                        type="button"
+                        onClick={generateNoirProof}
+                        disabled={isGeneratingProof}
+                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50"
+                      >
+                        {isGeneratingProof ? "Generating..." : "Generate Proof"}
+                      </button>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
@@ -197,7 +219,6 @@ export default function VotingProofGeneration() {
               </div>
             )}
           </div>
-
         </div>
       </main>
     </div>
