@@ -5,7 +5,7 @@
       "description": "This is a sample election",
       "startDate": "2024-03-20T00:00:00Z",
       "endDate": "2024-03-27T00:00:00Z",
-      "status": "active",
+      "status": "closed",
       "maxVoters": 100,
       "isPublic": false,
       "options": [
@@ -28,7 +28,7 @@
       "description": "This is a sample election",
       "startDate": "2024-03-20T00:00:00Z",
       "endDate": "2024-03-27T00:00:00Z",
-      "status": "active",
+      "status": "closed",
       "maxVoters": 100,
       "isPublic": true,
       "options": [

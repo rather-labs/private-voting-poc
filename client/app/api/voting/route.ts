@@ -1,12 +1,16 @@
 import { NextResponse } from 'next/server';
 import {
-  getOpenVotings,
   getVotingById,
   addVoting,
   closeVoting,
   type Voting,
   addVote,
+  getVotings,
 } from '../../server/db/voting-db';
+import { initializeServer } from '../../server/init';
+
+// Initialize the server
+initializeServer();
 
 // GET /api/voting - Get all open votings
 export async function GET(request: Request) {
@@ -23,8 +27,8 @@ export async function GET(request: Request) {
       return NextResponse.json(voting);
     }
 
-    // Get all open votings
-    const votings = getOpenVotings();
+    // Get all votings
+    const votings = getVotings();
     return NextResponse.json(votings);
   } catch (error) {
     console.error('Error in GET /api/voting:', error);

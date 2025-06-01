@@ -6,8 +6,7 @@ import Navbar from "./components/Navbar";
 import type { Voting } from "./server/db/voting-db";
 
 export default function Home() {
-  const [openVotings, setOpenVotings] = useState<Voting[]>([]);
-  const [closedVotings, setClosedVotings] = useState<Voting[]>([]);
+  const [votings, setVotings] = useState<Voting[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,9 +18,7 @@ export default function Home() {
           throw new Error('Failed to fetch votings');
         }
         const data = await response.json();
-        // Split votings into open and closed
-        setOpenVotings(data.filter((v: Voting) => v.status === 'active'));
-        setClosedVotings(data.filter((v: Voting) => v.status === 'closed'));
+        setVotings(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load votings');
       } finally {
@@ -32,17 +29,17 @@ export default function Home() {
     fetchVotings();
   }, []);
 
-  const VotingGrid = ({ votings, title }: { votings: Voting[], title: string }) => (
+  const VotingGrid = ({ filteredVotings, title }: { filteredVotings: Voting[], title: string }) => (
     <div className="mb-12">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">{title}</h2>
-      {votings.length === 0 ? (
+      {filteredVotings.length === 0 ? (
         <div className="text-center text-gray-600">No {title.toLowerCase()} at the moment</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {votings.map((voting, index) => (
+          {filteredVotings.map((voting) => (
             <Link
-              key={index+1}
-              href={`/voting/${index+1}`}
+              key={votings.indexOf(voting)+1}
+              href={`/voting/${votings.indexOf(voting)+1}`}
               className="block bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
             >
               <div className="p-6">
@@ -90,8 +87,8 @@ export default function Home() {
             <div className="text-center text-red-600">{error}</div>
           ) : (
             <>
-              <VotingGrid votings={openVotings} title="Open Elections" />
-              <VotingGrid votings={closedVotings} title="Closed Elections" />
+              <VotingGrid filteredVotings={votings.filter((v: Voting) => v.status === 'active')} title="Open Elections" />
+              <VotingGrid filteredVotings={votings.filter((v: Voting) => v.status === 'closed')} title="Closed Elections" />
             </>
           )}
         </div>
