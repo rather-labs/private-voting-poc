@@ -45,6 +45,28 @@
         3,
         1
       ]
+    },
+    {
+      "title": "asd 3",
+      "description": "asdasd",
+      "startDate": "2025-06-01T01:02",
+      "endDate": "2025-06-02T01:02",
+      "options": [
+        {
+          "name": "12",
+          "description": "1asd"
+        },
+        {
+          "name": "121",
+          "description": "asd"
+        }
+      ],
+      "isPublic": true,
+      "results": [
+        0,
+        0
+      ],
+      "status": "active"
     }
   ],
   "nullifiers": [

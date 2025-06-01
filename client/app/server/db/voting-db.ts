@@ -68,6 +68,8 @@ export function getVotingById(index: number): Voting | null {
 // Add a new voting
 export function addVoting(voting: Voting): Voting {
   const db = readDB();
+  voting.results = voting.options.map(() => 0);
+  voting.status = 'active';
   db.votings.push(voting);
   writeDB(db);
   return voting;
