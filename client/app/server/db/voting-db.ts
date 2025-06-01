@@ -2,6 +2,7 @@ import { verifyProof } from '@/app/utils/noir';
 import type { CompiledCircuit, ProofData } from '@noir-lang/types';
 import fs from 'fs';
 import path from 'path';
+import { addActiveVoting } from './voting-expiration';
 
 import JwtCircuitJSON from '@/public/circuit/jwtnoir.json' assert { type: 'json' };
 
@@ -14,7 +15,7 @@ export interface Voting {
   startDate: string;
   endDate: string;
   status: 'active' | 'closed';
-  maxVoters: number;
+  maxVoters?: number;
   isPublic: boolean;
   options: {
     name: string;
@@ -33,7 +34,7 @@ interface VotingDB {
 const DB_PATH = path.join(process.cwd(), 'app/server/db/voting-db.json');
 
 // Helper function to read from the database
-function readDB(): VotingDB {
+export function readDB(): VotingDB {
   try {
     const data = fs.readFileSync(DB_PATH, 'utf-8');
     return JSON.parse(data);
@@ -44,7 +45,7 @@ function readDB(): VotingDB {
 }
 
 // Helper function to write to the database
-function writeDB(data: VotingDB): void {
+export function writeDB(data: VotingDB): void {
   try {
     fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2));
   } catch (error) {
@@ -54,9 +55,9 @@ function writeDB(data: VotingDB): void {
 }
 
 // Get all open votings
-export function getOpenVotings(): Voting[] {
+export function getVotings(): Voting[] {
   const db = readDB();
-  return db.votings.filter(v => v.status === 'active');
+  return db.votings;
 }
 
 // Get a specific voting by index
@@ -70,8 +71,13 @@ export function addVoting(voting: Voting): Voting {
   const db = readDB();
   voting.results = voting.options.map(() => 0);
   voting.status = 'active';
+  const index = db.votings.length;
   db.votings.push(voting);
   writeDB(db);
+  
+  // Add to active votings list
+  addActiveVoting(index, voting.endDate);
+  
   return voting;
 }
 

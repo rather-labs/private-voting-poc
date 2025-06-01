@@ -56,6 +56,12 @@ export default function VotingPage() {
     );
   }
 
+  const getStatusColor = (status: string) => {
+    return status === 'active' 
+      ? 'bg-green-100 text-green-800 border-green-200'
+      : 'bg-red-100 text-red-800 border-red-200';
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
@@ -63,13 +69,18 @@ export default function VotingPage() {
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">{voting.title}</h1>
+            <div className="flex items-center justify-between mb-4">
+              <h1 className="text-3xl font-bold text-gray-900">{voting.title}</h1>
+              <div className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(voting.status)}`}>
+                {voting.status === 'active' ? 'Open' : 'Closed'}
+              </div>
+            </div>
             <p className="text-gray-600 mb-4">{voting.description}</p>
             <div className="flex flex-wrap gap-4 text-sm text-gray-500 mb-4">
               <div>Start: {new Date(voting.startDate).toLocaleDateString()}</div>
               <div>End: {new Date(voting.endDate).toLocaleDateString()}</div>
-              <div>Max Voters: {voting.maxVoters}</div>
-              <div>Current results: {voting.isPublic ? 'Public' : 'Private'}</div>
+              {voting.maxVoters && <div>Max Voters: {voting.maxVoters}</div>}
+              <div>Results: {voting.isPublic ? 'Public' : 'Private'}</div>
             </div>
 
             {/* Voting Options */}
@@ -85,8 +96,8 @@ export default function VotingPage() {
               </div>
             </div>
 
-            {/* Results Section - Only show if results are public */}
-            {voting.isPublic && (
+            {/* Results Section - Only show if results are public or voting is closed */}
+            {(voting.isPublic || voting.status === 'closed') && (
               <div className="mb-8">
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">Current Results</h2>
                 <div className="bg-white p-4 rounded-lg shadow">
