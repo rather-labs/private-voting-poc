@@ -5,6 +5,20 @@ import Link from "next/link";
 import Navbar from "./components/Navbar";
 import type { Voting } from "./server/db/voting-db";
 
+const formatDate = (dateString: string) => {
+  try {
+    return new Date(dateString).toLocaleString(undefined, {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  } catch (error) {
+    return 'Invalid date';
+  }
+};
+
 export default function Home() {
   const [votings, setVotings] = useState<Voting[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,10 +64,10 @@ export default function Home() {
                   {voting.description}
                 </p>
                 <div className="flex justify-between text-sm text-gray-500">
-                  <div>Start: {new Date(voting.startDate).toLocaleString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
+                  <div>Start: {formatDate(voting.startDate)}</div>
                 </div>
                 <div className="flex justify-between text-sm text-gray-500">
-                 <div>End: {new Date(voting.endDate).toLocaleString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
+                  <div>End: {formatDate(voting.endDate)}</div>
                 </div>
               </div>
             </Link>

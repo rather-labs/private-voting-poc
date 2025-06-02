@@ -14,7 +14,7 @@ export async function generateProof(circuit: CompiledCircuit, inputs: InputMap )
     toast.remove("toast-message");
   
     toast.loading("Initializing backend... ⏳", {duration: 1_000_000, id: "toast-message"});
-    const backend = new UltraHonkBackend(circuit.bytecode, { threads: 4 });
+    const backend = new UltraHonkBackend(circuit.bytecode);
     toast.remove("toast-message");
     
     toast.loading("Generating proof... ⏳", {duration: 1_000_000, id: "toast-message"});
@@ -42,16 +42,4 @@ export async function generateProof(circuit: CompiledCircuit, inputs: InputMap )
   }
 }  
 
-export async function verifyProof(circuit: CompiledCircuit, proof: ProofData ): Promise<boolean> {
-  try { 
-    const backend = new UltraHonkBackend(circuit.bytecode, { threads: 4 });
-    console.log("Verifying proof... ⏳");
-    const verified = await backend.verifyProof(proof);
-    console.log("verified", verified)
-    return verified;
-  } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    console.log("error", error)
-    throw new Error(`Failed to verify proof: ${errorMessage}`);
-  }
-}  
+
