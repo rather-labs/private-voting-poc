@@ -27,6 +27,7 @@ export default function VotingProofGeneration({ voting }: ProofGenerationProps) 
   const params = useParams();
   const [proof, setProof] = useState<ExtendedProofData | null>(null);
   const [isGeneratingProof, setIsGeneratingProof] = useState(false);
+  const [isSubmittingVote, setIsSubmittingVote] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
 
@@ -93,6 +94,7 @@ export default function VotingProofGeneration({ voting }: ProofGenerationProps) 
     if (!proof || selectedOption === null) return;
               
     try {
+      setIsSubmittingVote(true);
       // Store the nullifier and vote
       const response = await fetch('/api/voting', {
         method: 'POST',
@@ -117,6 +119,8 @@ export default function VotingProofGeneration({ voting }: ProofGenerationProps) 
       setProof({ ...proof, submitted: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to submit vote');
+    } finally {
+      setIsSubmittingVote(false);
     }
   }
 
@@ -129,6 +133,7 @@ export default function VotingProofGeneration({ voting }: ProofGenerationProps) 
         <select
           id="voting-option"
           value={selectedOption || ''}
+          disabled={ isSubmittingVote }
           onChange={(e) => setSelectedOption(Number(e.target.value))}
           className="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
         >
@@ -146,7 +151,7 @@ export default function VotingProofGeneration({ voting }: ProofGenerationProps) 
           <button
             type="button"
             onClick={generateNoirProof}
-            disabled={isGeneratingProof}
+            disabled={isGeneratingProof || isSubmittingVote}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed w-fit"
           >
             {isGeneratingProof ? "Generating..." : "Generate Proof"}
@@ -155,10 +160,10 @@ export default function VotingProofGeneration({ voting }: ProofGenerationProps) 
           <button
             type="button"
             onClick={submitVote}
-            disabled={!proof || selectedOption === null}
+            disabled={!proof || selectedOption === null || isSubmittingVote || isGeneratingProof}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed w-fit"
           >
-            Submit Vote
+            {isSubmittingVote ? "Submiting Vote..." : "Submit Vote"}
           </button>
         </div>
       ) : (

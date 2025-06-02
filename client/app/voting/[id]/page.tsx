@@ -77,10 +77,10 @@ export default function VotingPage() {
             </div>
             <p className="text-gray-600 mb-4">{voting.description}</p>
             <div className="flex flex-wrap gap-4 text-sm text-gray-500 mb-4">
-              <div>Start: {new Date(voting.startDate).toLocaleDateString()}</div>
-              <div>End: {new Date(voting.endDate).toLocaleDateString()}</div>
+              <div>Start: {new Date(voting.startDate).toLocaleString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
+              <div>End: {new Date(voting.endDate).toLocaleString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
               {voting.maxVoters && <div>Max Voters: {voting.maxVoters}</div>}
-              <div>Results: {voting.isPublic ? 'Public' : 'Private'}</div>
+              <div>Partial Results: {voting.isPublic ? 'Public' : 'Private'}</div>
             </div>
 
             {/* Voting Options */}
