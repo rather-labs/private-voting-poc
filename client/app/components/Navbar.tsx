@@ -11,7 +11,7 @@ export default function Navbar() {
 
   const handleSignOut = async () => {
     await signOut({ 
-      callbackUrl: "/",
+      callbackUrl: window.location.pathname,
       redirect: true 
     });
     router.refresh();
@@ -72,7 +72,7 @@ export default function Navbar() {
             ) : (
               <button
                 type="button"
-                onClick={() => signIn("google", { callbackUrl: "/" })}
+                onClick={() => signIn("google", { callbackUrl: window.location.pathname })}
                 className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium"
               >
                 Sign In
