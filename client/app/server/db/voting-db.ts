@@ -2,10 +2,9 @@ import { verifyProof } from '@/app/utils/noir';
 import type { CompiledCircuit, ProofData } from '@noir-lang/types';
 import fs from 'fs';
 import path from 'path';
-import { addActiveVoting } from './voting-expiration';
+import { addActiveVoting, addInactiveVoting } from './voting-status';
 
 import JwtCircuitJSON from '@/public/circuit/jwtnoir.json' assert { type: 'json' };
-import { NextResponse } from 'next/server';
 
 export interface Voting {
   title: string;
@@ -84,9 +83,14 @@ export function addVoting(voting: Voting): Voting {
   db.votings.push(voting);
   writeDB(db);
   
-  // Add to active votings list
-  addActiveVoting(index, voting.endDate);
-  
+  if (voting.status === 'active') {
+    // Add to active votings list
+    addActiveVoting(index, voting.endDate);
+  }
+  else {
+    // Add to inactive votings list
+    addInactiveVoting(index, voting.startDate);
+  }  
   return voting;
 }
 

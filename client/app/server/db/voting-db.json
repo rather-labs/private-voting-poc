@@ -84,6 +84,23 @@
         0
       ],
       "status": "active"
+    },
+    {
+      "title": "asd",
+      "description": "asd",
+      "startDate": "2025-06-01T22:53",
+      "endDate": "2025-06-02T22:52",
+      "options": [
+        {
+          "name": "asd",
+          "description": "asd"
+        }
+      ],
+      "isPublic": true,
+      "results": [
+        0
+      ],
+      "status": "active"
     }
   ],
   "nullifiers": [
