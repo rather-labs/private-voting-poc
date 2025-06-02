@@ -1,3 +1,7 @@
+if (process.env.VERCEL) {
+  process.env.HOME = '/tmp';   // let bb.js write /tmp/.bb-crs
+}
+
 import { UltraHonkBackend } from '@aztec/bb.js';
 import type { CompiledCircuit, ProofData } from '@noir-lang/types';
 import fs from 'fs';
