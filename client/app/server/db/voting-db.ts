@@ -1,10 +1,24 @@
-import { verifyProof } from '@/app/utils/noir';
+import { UltraHonkBackend } from '@aztec/bb.js';
 import type { CompiledCircuit, ProofData } from '@noir-lang/types';
 import fs from 'fs';
 import path from 'path';
 import { addActiveVoting, addInactiveVoting } from './voting-status';
 
 import JwtCircuitJSON from '@/public/circuit/jwtnoir.json' assert { type: 'json' };
+
+export async function verifyProof(circuit: CompiledCircuit, proof: ProofData ): Promise<boolean> {
+  try { 
+    const backend = new UltraHonkBackend(circuit.bytecode);
+    console.log("Verifying proof... ⏳");
+    const verified = await backend.verifyProof(proof);
+    console.log("verified", verified)
+    return verified;
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.log("error", error)
+    throw new Error(`Failed to verify proof: ${errorMessage}`);
+  }
+}  
 
 export interface Voting {
   title: string;

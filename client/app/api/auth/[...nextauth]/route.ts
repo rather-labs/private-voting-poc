@@ -1,11 +1,13 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
+export const dynamic = 'force-dynamic';
+
 const handler = NextAuth({
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      clientId: process.env.GOOGLE_CLIENT_ID || "dummy",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "dummy",
       authorization: {
         params: {
           scope: "openid email profile",
@@ -17,10 +19,6 @@ const handler = NextAuth({
       idToken: true,
     }),
   ],
-  pages: {
-    signIn: "/auth/signin",
-    error: "/auth/error",
-  },
   callbacks: {
     async jwt({ token, account, user }) {
       if (account && user) {
@@ -50,7 +48,7 @@ const handler = NextAuth({
   session: {
     strategy: "jwt",
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || "fallback-secret-for-build",
 });
 
 export { handler as GET, handler as POST }; 
