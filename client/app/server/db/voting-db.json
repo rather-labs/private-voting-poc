@@ -4,8 +4,8 @@
       "title": "Sample Election 1",
       "description": "This is a sample election",
       "startDate": "2024-03-20T00:00:00Z",
-      "endDate": "2024-03-27T00:00:00Z",
-      "status": "closed",
+      "endDate": "2026-03-27T00:00:00Z",
+      "status": "active",
       "maxVoters": 100,
       "isPublic": false,
       "options": [
@@ -27,8 +27,8 @@
       "title": "Sample Election 2",
       "description": "This is a sample election",
       "startDate": "2024-03-20T00:00:00Z",
-      "endDate": "2024-03-27T00:00:00Z",
-      "status": "closed",
+      "endDate": "2026-03-27T00:00:00Z",
+      "status": "active",
       "maxVoters": 100,
       "isPublic": true,
       "options": [
@@ -39,90 +39,18 @@
         {
           "name": "Option B",
           "description": "Second voting option"
+        },
+        {
+          "name": "Option C",
+          "description": "Third voting option"
         }
       ],
       "results": [
         3,
         1
       ]
-    },
-    {
-      "title": "asd 3",
-      "description": "asdasd",
-      "startDate": "2025-06-01T01:02",
-      "endDate": "2025-06-02T01:02",
-      "options": [
-        {
-          "name": "12",
-          "description": "1asd"
-        },
-        {
-          "name": "121",
-          "description": "asd"
-        }
-      ],
-      "isPublic": true,
-      "results": [
-        1,
-        0
-      ],
-      "status": "active"
-    },
-    {
-      "title": "Election at Ratherlabs",
-      "description": "asdad",
-      "startDate": "2025-06-01T22:03",
-      "endDate": "2025-06-23T22:03",
-      "options": [
-        {
-          "name": "asd",
-          "description": "asd"
-        }
-      ],
-      "isPublic": true,
-      "results": [
-        0
-      ],
-      "status": "active"
-    },
-    {
-      "title": "asd",
-      "description": "asd",
-      "startDate": "2025-06-01T22:53",
-      "endDate": "2025-06-02T22:52",
-      "options": [
-        {
-          "name": "asd",
-          "description": "asd"
-        }
-      ],
-      "isPublic": true,
-      "results": [
-        1
-      ],
-      "status": "active"
-    },
-    {
-      "title": "asd",
-      "description": "asdasd",
-      "startDate": "2025-06-03T23:20",
-      "endDate": "2025-06-05T23:20",
-      "options": [
-        {
-          "name": "asd",
-          "description": "asd"
-        }
-      ],
-      "isPublic": true,
-      "results": [
-        0
-      ],
-      "status": "pending"
     }
   ],
   "nullifiers": [
-    "0x19ca7ceb99c78ed63b6c2679466027edf36afa5f4ffbad72b10b2cfe696a354d",
-    "0x11e3a555f4a1f208d718d3b83706164f260b02a9c0a4296f516dc3325c478b67",
-    "0x00b03294ac9390fadb8d153b1b0a1d3fffa7e97d5569e7ff01a7c9f000c30b95"
   ]
 }
