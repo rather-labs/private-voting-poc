@@ -6,8 +6,8 @@ import { Providers } from "./providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "JWT Voting",
-  description: "Vote using JWT proofs",
+  title: "Rather Labs Private Voting PoC",
+  description: "Proof of concept for private voting using JWT proofs",
 };
 
 export default function RootLayout({
