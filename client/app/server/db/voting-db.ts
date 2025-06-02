@@ -11,7 +11,7 @@ export interface Voting {
   description: string;
   startDate: string;
   endDate: string;
-  status: 'active' | 'closed';
+  status: 'active' | 'closed' | 'pending';
   maxVoters?: number;
   isPublic: boolean;
   options: {
@@ -73,7 +73,10 @@ export function addVoting(voting: Voting): Voting {
   if (beginDate >= endDate) {
     throw new Error('Start date must be before end date');
   }
-  if (beginDate > currentDate || endDate <= currentDate) {
+  if (beginDate > currentDate) {
+    voting.status = 'pending';
+  }
+  else if (endDate <= currentDate) {
     voting.status = 'closed';
   }
   else {
@@ -86,6 +89,10 @@ export function addVoting(voting: Voting): Voting {
   if (voting.status === 'active') {
     // Add to active votings list
     addActiveVoting(index, voting.endDate);
+  }
+  else if (voting.status === 'pending') {
+    // Add to inactive votings list
+    addInactiveVoting(index, voting.startDate);
   }
   else {
     // Add to inactive votings list

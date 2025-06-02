@@ -55,11 +55,6 @@ export default function Home() {
                 <div className="flex justify-between text-sm text-gray-500">
                  <div>End: {new Date(voting.endDate).toLocaleString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
                 </div>
-                {voting.status === 'closed' && (
-                  <div className="mt-4 inline-block px-3 py-1 text-sm font-medium text-red-700 bg-red-100 rounded-full">
-                    Closed
-                  </div>
-                )}
               </div>
             </Link>
           ))}
@@ -90,6 +85,7 @@ export default function Home() {
           ) : (
             <>
               <VotingGrid filteredVotings={votings.filter((v: Voting) => v.status === 'active')} title="Open Elections" />
+              <VotingGrid filteredVotings={votings.filter((v: Voting) => v.status === 'pending')} title="Upcoming Elections" />
               <VotingGrid filteredVotings={votings.filter((v: Voting) => v.status === 'closed')} title="Closed Elections" />
             </>
           )}
