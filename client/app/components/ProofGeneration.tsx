@@ -20,9 +20,10 @@ interface ExtendedProofData extends ProofData {
 
 interface ProofGenerationProps {
   voting: Voting;
+  setVoting: (voting: Voting) => void;
 }
 
-export default function VotingProofGeneration({ voting }: ProofGenerationProps) {
+export default function VotingProofGeneration({ voting, setVoting }: ProofGenerationProps) {
   const { data: session, status } = useSession();
   const params = useParams();
   const [proof, setProof] = useState<ExtendedProofData | null>(null);
@@ -117,6 +118,10 @@ export default function VotingProofGeneration({ voting }: ProofGenerationProps) 
 
       // Show success message
       setProof({ ...proof, submitted: true });
+      
+      // Update the voting results without page reload
+      const updatedVoting = await fetch(`/api/voting?id=${Number(params.id)-1}`).then(res => res.json());
+      setVoting(updatedVoting);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to submit vote');
     } finally {

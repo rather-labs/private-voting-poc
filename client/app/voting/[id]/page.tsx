@@ -149,7 +149,7 @@ export default function VotingPage() {
             <div className="mb-8">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Cast your vote</h2>
               <div className="bg-white p-4 rounded-lg shadow">
-                <VotingProofGeneration voting={voting} />
+                <VotingProofGeneration voting={voting} setVoting={setVoting} />
               </div>
             </div>
           )}
