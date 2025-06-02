@@ -58,11 +58,13 @@ export default function CreateVoting() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to create voting");
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to create voting');
       }
 
       router.push("/");
       router.refresh();
+
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create voting");
     } finally {
