@@ -58,16 +58,8 @@ export async function POST(request: Request) {
         proofBytes[key] = body.proof.proof[key.toString()];
       }
       // Submit vote
-      const result = await addVote(body.electionId, {proof:proofBytes, publicInputs:body.proof.publicInputs}, body.selectedOption);
-      if (result === 0) {
-        return NextResponse.json({ success: true }, { status: 201 });
-      } else if (result === -1) {
-        return NextResponse.json({ error: 'Election not active' }, { status: 404 });
-      } else if (result === -2) {
-        return NextResponse.json({ error: 'Invalid proof submitted' }, { status: 400 });
-      } else if (result === -3) {
-        return NextResponse.json({ error: 'This account already cast a vote in this election' }, { status: 400 });
-      }
+      await addVote(body.electionId, {proof:proofBytes, publicInputs:body.proof.publicInputs}, body.selectedOption);
+      return NextResponse.json({ success: true }, { status: 201 });
     }
 
     return NextResponse.json(
@@ -75,9 +67,8 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   } catch (error) {
-    console.error('Error in POST /api/voting:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

@@ -63,13 +63,31 @@
       ],
       "isPublic": true,
       "results": [
-        0,
+        1,
+        0
+      ],
+      "status": "active"
+    },
+    {
+      "title": "Election at Ratherlabs",
+      "description": "asdad",
+      "startDate": "2025-06-01T22:03",
+      "endDate": "2025-06-23T22:03",
+      "options": [
+        {
+          "name": "asd",
+          "description": "asd"
+        }
+      ],
+      "isPublic": true,
+      "results": [
         0
       ],
       "status": "active"
     }
   ],
   "nullifiers": [
-    "0x19ca7ceb99c78ed63b6c2679466027edf36afa5f4ffbad72b10b2cfe696a354d"
+    "0x19ca7ceb99c78ed63b6c2679466027edf36afa5f4ffbad72b10b2cfe696a354d",
+    "0x11e3a555f4a1f208d718d3b83706164f260b02a9c0a4296f516dc3325c478b67"
   ]
 }

@@ -5,10 +5,8 @@ import path from 'path';
 import { addActiveVoting } from './voting-expiration';
 
 import JwtCircuitJSON from '@/public/circuit/jwtnoir.json' assert { type: 'json' };
+import { NextResponse } from 'next/server';
 
-
-
-// Types
 export interface Voting {
   title: string;
   description: string;
@@ -70,7 +68,18 @@ export function getVotingById(index: number): Voting | null {
 export function addVoting(voting: Voting): Voting {
   const db = readDB();
   voting.results = voting.options.map(() => 0);
-  voting.status = 'active';
+  const currentDate = new Date();
+  const beginDate = new Date(voting.startDate);
+  const endDate = new Date(voting.endDate);
+  if (beginDate >= endDate) {
+    throw new Error('Start date must be before end date');
+  }
+  if (beginDate > currentDate || endDate <= currentDate) {
+    voting.status = 'closed';
+  }
+  else {
+    voting.status = 'active';
+  }
   const index = db.votings.length;
   db.votings.push(voting);
   writeDB(db);
@@ -93,23 +102,23 @@ export function closeVoting(index: number): boolean {
 }
 
 // Add a vote to a voting
-export async function addVote(electionIndex: number, proof: ProofData, selectedOptionIndex: number): Promise<Number> {
+export async function addVote(electionIndex: number, proof: ProofData, selectedOptionIndex: number) {
   const db = readDB();
   
   if (!db.votings[electionIndex] || db.votings[electionIndex].status !== 'active') {
-    return -1;
+    throw new Error('Election not active');
   }
 
   // Verify the proof
   const isValid = await verifyProof(JwtCircuitJSON as CompiledCircuit, proof as ProofData);
   if (!isValid) {
-    return -2;
+    throw new Error('Invalid proof submitted');
   }
 
   // Check if the nullifier already exists
   const nullifierExists = db.nullifiers.includes(proof.publicInputs[1]);
   if (nullifierExists) {
-    return -3;
+    throw new Error('This account already cast a vote in this election');
   }
 
   // Add the nullifier
@@ -118,6 +127,5 @@ export async function addVote(electionIndex: number, proof: ProofData, selectedO
   // Add the vote
   db.votings[electionIndex].results[selectedOptionIndex]++;
   writeDB(db);
-  return 0;
 }
 

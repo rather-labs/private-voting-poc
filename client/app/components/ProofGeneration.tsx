@@ -108,6 +108,8 @@ export default function VotingProofGeneration({ voting }: ProofGenerationProps) 
 
       if (!response.ok) {
         const data = await response.json();
+        console.log("response", response);
+        console.log("data", data);
         throw new Error(data.error || 'Failed to submit vote');
       }
 
