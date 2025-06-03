@@ -21,14 +21,14 @@ export async function generateProof(circuit: CompiledCircuit, inputs: InputMap )
     const proof = await backend.generateProof(witness);
     toast.remove("toast-message");
 
-    toast.loading("Verifying proof... ⏳", {duration: 1_000_000, id: "toast-message"});
-    const verified = await backend.verifyProof(proof);
-    toast.remove("toast-message");
-    if (verified) {
-      toast.success("Proof verified! 🎉", {duration: 15_000, id: "toast-message"});
-    } else {
-      toast.error("Proof verification failed! 🚫", {duration: 15_000, id: "toast-message"});
-    }
+    //toast.loading("Verifying proof... ⏳", {duration: 1_000_000, id: "toast-message"});
+    //const verified = await backend.verifyProof(proof);
+    //toast.remove("toast-message");
+    //if (verified) {
+    //  toast.success("Proof verified! 🎉", {duration: 15_000, id: "toast-message"});
+    //} else {
+    //  toast.error("Proof verification failed! 🚫", {duration: 15_000, id: "toast-message"});
+    //}
 
     return {
       proof: proof.proof,
