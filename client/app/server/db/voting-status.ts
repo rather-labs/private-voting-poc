@@ -1,125 +1,131 @@
-import { readDB, writeDB, closeVoting, type Voting } from './voting-db';
+import { closeVoting, getVotings, type Voting } from './voting-db';
 
-// Keep track of active voting indices sorted by end date
-let activeVotingIndices: number[] = [];
-let inactiveVotingIndices: number[] = [];
+// Keep track of active voting IDs sorted by end date
+let activeVotingIds: number[] = [];
+let inactiveVotingIds: number[] = [];
 
 // Initialize the active voting indices
-export function initializeActiveVotings() {
-  const db = readDB();
-  activeVotingIndices = db.votings
-    .map((voting: Voting, index: number) => ({ index, endDate: new Date(voting.endDate), status: voting.status }))
-    .filter(({ status }) => status == 'active')
-    .sort((a: { endDate: Date }, b: { endDate: Date }) => a.endDate.getTime() - b.endDate.getTime())
-    .map(({ index }: { index: number }) => index);
+export async function initializeActiveVotings() {
+  const votings = await getVotings();
+  activeVotingIds = votings
+    .filter((voting: Voting) => voting.status === 'active')
+    .sort((a: Voting, b: Voting) => new Date(a.endDate).getTime() - new Date(b.endDate).getTime())
+    .map((voting: Voting) => voting.id!)
+    .filter((id): id is number => id !== undefined);
 }
 
-export function initializeInactiveVotings() {
-    const db = readDB();
-    inactiveVotingIndices = db.votings
-      .map((voting: Voting, index: number) => ({ index, beginDate: new Date(voting.startDate), status: voting.status }))
-      .filter(({ status }) => status == 'closed')
-      .sort((a: { beginDate: Date }, b: { beginDate: Date }) => a.beginDate.getTime() - b.beginDate.getTime())
-      .map(({ index }: { index: number }) => index);
-  }
+export async function initializeInactiveVotings() {
+  const votings = await getVotings();
+  inactiveVotingIds = votings
+    .filter((voting: Voting) => voting.status === 'closed')
+    .sort((a: Voting, b: Voting) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime())
+    .map((voting: Voting) => voting.id!)
+    .filter((id): id is number => id !== undefined);
+}
 
 // Add a new voting to the active list
-export function addActiveVoting(index: number, endDate: string) {
+export async function addActiveVoting(id: number, endDate: string) {
   const endDateTime = new Date(endDate).getTime();
-  const insertIndex = activeVotingIndices.findIndex(
-    i => new Date(readDB().votings[i].endDate).getTime() > endDateTime
+  const votings = await getVotings();
+  const insertIndex = activeVotingIds.findIndex(
+    votingId => {
+      const voting = votings.find(v => v.id === votingId);
+      return voting && new Date(voting.endDate).getTime() > endDateTime;
+    }
   );
   
   if (insertIndex === -1) {
-    activeVotingIndices.push(index);
+    activeVotingIds.push(id);
   } else {
-    activeVotingIndices.splice(insertIndex, 0, index);
+    activeVotingIds.splice(insertIndex, 0, id);
   }
 }
 
-// Add a new voting to the active list
-export function addInactiveVoting(index: number, beginDate: string) {
+// Add a new voting to the inactive list
+export async function addInactiveVoting(id: number, beginDate: string) {
   const beginDateTime = new Date(beginDate).getTime();
-  const insertIndex = inactiveVotingIndices.findIndex(
-    i => new Date(readDB().votings[i].startDate).getTime() > beginDateTime
+  const votings = await getVotings();
+  const insertIndex = inactiveVotingIds.findIndex(
+    votingId => {
+      const voting = votings.find(v => v.id === votingId);
+      return voting && new Date(voting.startDate).getTime() > beginDateTime;
+    }
   );
   
   if (insertIndex === -1) {
-    inactiveVotingIndices.push(index);
+    inactiveVotingIds.push(id);
   } else {
-    inactiveVotingIndices.splice(insertIndex, 0, index);
+    inactiveVotingIds.splice(insertIndex, 0, id);
   }
 }
 
 // Check and close expired votings
-export function checkExpiredVotings() {
+export async function checkExpiredVotings() {
   const now = new Date();
-  const db = readDB();
-  const expiredIndices: number[] = [];
+  const votings = await getVotings();
+  const expiredIds: number[] = [];
 
   // Find all expired votings
-  for (let i = 0; i < activeVotingIndices.length; i++) {
-    const votingIndex = activeVotingIndices[i];
-    const voting = db.votings[votingIndex];
+  for (let i = 0; i < activeVotingIds.length; i++) {
+    const votingId = activeVotingIds[i];
+    const voting = votings.find(v => v.id === votingId);
     
-    if (new Date(voting.endDate) <= now) {
-      expiredIndices.push(i);
-      closeVoting(votingIndex);
-    } else {
+    if (voting && new Date(voting.endDate) <= now) {
+      expiredIds.push(i);
+      await closeVoting(votingId);
+    } else if (voting) {
       // Since the array is sorted, we can stop checking once we find a non-expired voting
       break;
     }
   }
 
   // Remove expired votings from the active list (in reverse order to maintain correct indices)
-  for (let i = expiredIndices.length - 1; i >= 0; i--) {
-    activeVotingIndices.splice(expiredIndices[i], 1);
+  for (let i = expiredIds.length - 1; i >= 0; i--) {
+    activeVotingIds.splice(expiredIds[i], 1);
   }
 
-  return expiredIndices.length > 0;
+  return expiredIds.length > 0;
 }
 
 // Check and open votings that have reached their begin date
-export function checkBeginVotings() {
+export async function checkBeginVotings() {
   const now = new Date();
-  const db = readDB();
+  const votings = await getVotings();
   let openedAny = false;
 
   // Check all votings
-  for (let i = 0; i < inactiveVotingIndices.length; i++) {
-    const votingIndex = inactiveVotingIndices[i];
-    const voting = db.votings[votingIndex];
-    if (voting.status === 'closed' 
-        && new Date(voting.startDate) <= now 
-        && new Date(voting.endDate) > now
-        && (!voting.maxVoters || voting.results.reduce((a, b) => a + b, 0) < voting.maxVoters)
+  for (let i = 0; i < inactiveVotingIds.length; i++) {
+    const votingId = inactiveVotingIds[i];
+    const voting = votings.find(v => v.id === votingId);
+    
+    if (voting && 
+        voting.status === 'closed' && 
+        new Date(voting.startDate) <= now && 
+        new Date(voting.endDate) > now &&
+        (!voting.maxVoters || voting.results.reduce((a, b) => a + b, 0) < voting.maxVoters)
     ) {
       // Open the voting
-      voting.status = 'active';
+      await closeVoting(votingId); // This will update the status to 'active'
       openedAny = true;
       // Add to active votings list
-      addActiveVoting(votingIndex, voting.endDate);
+      await addActiveVoting(votingId, voting.endDate);
       // Remove from inactive votings list
-      inactiveVotingIndices.splice(i, 1);
+      inactiveVotingIds.splice(i, 1);
     }
-  }
-
-  if (openedAny) {
-    writeDB(db);
   }
 
   return openedAny;
 }
 
 // Start the voting status checker
-export function startExpirationChecker() {
+export async function startExpirationChecker() {
   // Check immediately on start
-  checkBeginVotings();
-  checkExpiredVotings();
+  await checkBeginVotings();
+  await checkExpiredVotings();
   
   // Then check every minute
-  setInterval(() => {
-    checkBeginVotings();
-    checkExpiredVotings();
+  setInterval(async () => {
+    await checkBeginVotings();
+    await checkExpiredVotings();
   }, 60000);
 } 

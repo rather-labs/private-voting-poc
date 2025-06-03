@@ -16,7 +16,7 @@ export default function VotingPage() {
   useEffect(() => {
     async function fetchVoting() {
       try {
-        const response = await fetch(`/api/voting?id=${Number(params.id)-1}`);
+        const response = await fetch(`/api/voting?id=${Number(params.id)}`);
         if (!response.ok) {
           throw new Error('Failed to fetch voting');
         }

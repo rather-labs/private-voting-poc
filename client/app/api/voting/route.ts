@@ -10,7 +10,7 @@ import {
 import { initializeServer } from '../../server/init';
 
 // Initialize the server
-initializeServer();
+initializeServer().catch(console.error);
 
 // GET /api/voting - Get all open votings
 export async function GET(request: Request) {
@@ -20,7 +20,7 @@ export async function GET(request: Request) {
   try {
     if (id) {
       // Get specific voting
-      const voting = getVotingById(Number(id));
+      const voting = await getVotingById(Number(id));
       if (!voting) {
         return NextResponse.json({ error: 'Voting not found' }, { status: 404 });
       }
@@ -28,7 +28,7 @@ export async function GET(request: Request) {
     }
 
     // Get all votings
-    const votings = getVotings();
+    const votings = await getVotings();
     return NextResponse.json(votings);
   } catch (error) {
     console.error('Error in GET /api/voting:', error);
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
 
     if ('title' in body && 'description' in body && 'startDate' in body && 'endDate' in body && 'options' in body) {
       // Add new voting
-      const newVoting = addVoting(body);
+      const newVoting = await addVoting(body);
       return NextResponse.json(newVoting, { status: 201 });
     }
 
@@ -87,7 +87,7 @@ export async function PATCH(request: Request) {
       );
     }
 
-    const success = closeVoting(Number(id));
+    const success = await closeVoting(Number(id));
     if (!success) {
       return NextResponse.json(
         { error: 'Voting not found' },
