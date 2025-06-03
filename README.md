@@ -1,34 +1,15 @@
-# Voting quests with EVM verification
+# Private voting with JWT-noir PoC
+It commits a proof from the sign in token.
+Generates a nullifier with the google id and the election id.
+The voter identity could be brute forced if the google ids are leaked.
 
-# Run hardhat
+# Set configuration variables
 
-Start the localchain
-```bash
-cd contracts
-```
-
-```bash
-npx hardhat node
-```
-
-Deploy contracts
-```bash
-npx hardhat ignition deploy ./ignition/modules/VotingQuest.ts --network localhost --reset
-```
-
-Transfer tokens to contract
-```bash
-npx hardhat run scripts/sendETHToMetaMask.ts --network localhost
-```
-
-# Set client configuration variables
-
-Set this variables in local.env
+Set this variables in env.local
 ```bash
 GOOGLE_CLIENT_SECRET=
 GOOGLE_CLIENT_ID=
 NEXTAUTH_SECRET=
-NEXT_PUBLIC_VOTING_QUEST_FACTORY_ADDRESS=
 ```
 
 # Run client
@@ -41,14 +22,7 @@ cd client
 npm run dev
 ```
 
-# Generate a quest
-
+# Deploy to vercel with 
 ```bash
-```
-# Vote on a quest
-
-```bash
-```
-
-```bash
+vercel --prod
 ```
