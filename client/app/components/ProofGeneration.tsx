@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { generateInputs } from "noir-jwt";
 import { generateProof } from "../utils/noir";
@@ -31,6 +31,13 @@ export default function VotingProofGeneration({ voting, setVoting }: ProofGenera
   const [isSubmittingVote, setIsSubmittingVote] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
+  const [hasVoted, setHasVoted] = useState(false);
+
+  useEffect(() => {
+    if (hasVoted) {
+      setError('You have already cast a vote in this election');
+    }
+  }, [hasVoted]);
 
   async function getInputs() {
     if (status === "authenticated" && session) {
@@ -72,6 +79,21 @@ export default function VotingProofGeneration({ voting, setVoting }: ProofGenera
     return null;
   }
 
+  async function checkNullifier(nullifier: string) {
+    try {
+      const response = await fetch(`/api/voting/check-nullifier?electionId=${params.id}&nullifier=${nullifier}`);
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to check nullifier');
+      }
+      const { hasVoted } = await response.json();
+      setHasVoted(hasVoted);
+    } catch (err) {
+      console.error('Error checking nullifier:', err);
+      setError(err instanceof Error ? err.message : 'Failed to check if you have voted');
+    }
+  }
+
   async function generateNoirProof() {
     try {
       setIsGeneratingProof(true);
@@ -82,6 +104,8 @@ export default function VotingProofGeneration({ voting, setVoting }: ProofGenera
       const generatedProof = await generateProof(JwtCircuitJSON as CompiledCircuit, inputs as InputMap);
       
       setProof(generatedProof);
+      // Check if the nullifier has already voted
+      await checkNullifier(generatedProof.publicInputs[1]);
     } catch (err: unknown) {
       console.error("Error generating proof:", err);
       const errorMessage = err instanceof Error ? err.message : "Failed to generate proof";
@@ -92,7 +116,7 @@ export default function VotingProofGeneration({ voting, setVoting }: ProofGenera
   }
 
   async function submitVote() {
-    if (!proof || selectedOption === null) return;
+    if (!proof || selectedOption === null || hasVoted) return;
               
     try {
       setIsSubmittingVote(true);
@@ -105,14 +129,12 @@ export default function VotingProofGeneration({ voting, setVoting }: ProofGenera
         body: JSON.stringify({
           electionId: Number(params.id),
           proof: proof,
-          selectedOption: selectedOption-1,
+          selectedOption: selectedOption,
         }),
       });
 
       if (!response.ok) {
         const data = await response.json();
-        console.log("response", response);
-        console.log("data", data);
         throw new Error(data.error || 'Failed to submit vote');
       }
 
@@ -121,7 +143,8 @@ export default function VotingProofGeneration({ voting, setVoting }: ProofGenera
       
       // Update the voting results without page reload
       const updatedVoting = await fetch(`/api/voting?id=${Number(params.id)}`).then(res => res.json());
-      setVoting(updatedVoting);
+      setVoting(updatedVoting);      
+      setHasVoted(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to submit vote');
     } finally {
@@ -138,13 +161,13 @@ export default function VotingProofGeneration({ voting, setVoting }: ProofGenera
         <select
           id="voting-option"
           value={selectedOption || ''}
-          disabled={ isSubmittingVote }
+          disabled={isSubmittingVote || hasVoted}
           onChange={(e) => setSelectedOption(Number(e.target.value))}
           className="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
         >
           <option value="">Choose an option</option>
           {voting.options.map((option, index) => (
-            <option key={index+1} value={index+1}>
+            <option key={option.name} value={index}>
               {option.name}
             </option>
           ))}
@@ -156,7 +179,7 @@ export default function VotingProofGeneration({ voting, setVoting }: ProofGenera
           <button
             type="button"
             onClick={generateNoirProof}
-            disabled={isGeneratingProof || isSubmittingVote}
+            disabled={isGeneratingProof || isSubmittingVote }
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed w-fit"
           >
             {isGeneratingProof ? "Generating..." : "Generate Proof"}
@@ -165,7 +188,7 @@ export default function VotingProofGeneration({ voting, setVoting }: ProofGenera
           <button
             type="button"
             onClick={submitVote}
-            disabled={!proof || selectedOption === null || isSubmittingVote || isGeneratingProof}
+            disabled={!proof || selectedOption === null || isSubmittingVote || isGeneratingProof || hasVoted}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed w-fit"
           >
             {isSubmittingVote ? "Verifying Proof & Submitting Vote..." : "Verify Proof & Submit Vote"}

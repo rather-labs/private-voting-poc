@@ -1,4 +1,4 @@
-import { closeVoting, getVotings, type Voting } from './voting-db';
+import { closeVoting, getVotings, openVoting, type Voting } from './voting-db';
 
 // Keep track of active voting IDs sorted by end date
 let activeVotingIds: number[] = [];
@@ -10,7 +10,7 @@ export async function initializeActiveVotings() {
   activeVotingIds = votings
     .filter((voting: Voting) => voting.status === 'active')
     .sort((a: Voting, b: Voting) => new Date(a.endDate).getTime() - new Date(b.endDate).getTime())
-    .map((voting: Voting) => voting.id!)
+    .map((voting: Voting) => voting.id)
     .filter((id): id is number => id !== undefined);
 }
 
@@ -19,7 +19,7 @@ export async function initializeInactiveVotings() {
   inactiveVotingIds = votings
     .filter((voting: Voting) => voting.status === 'closed')
     .sort((a: Voting, b: Voting) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime())
-    .map((voting: Voting) => voting.id!)
+    .map((voting: Voting) => voting.id)
     .filter((id): id is number => id !== undefined);
 }
 
@@ -71,13 +71,17 @@ export async function checkExpiredVotings() {
     const voting = votings.find(v => v.id === votingId);
     
     if (voting) {
-      const hasReachedThreshold = voting.voteThreshold !== undefined && 
-        voting.results.some(votes => votes >= (voting.voteThreshold ?? 0)) || 
-        (voting.maxVoters && voting.results.reduce((a, b) => a + b, 0) >= voting.maxVoters);
-      
+
       const shouldClose = 
         new Date(voting.endDate) <= now || // Time expired
-        hasReachedThreshold; // Threshold reached
+        (voting.voteThreshold !== undefined 
+          && voting.voteThreshold > 0 
+          // biome-ignore lint/style/noNonNullAssertion: <explanation>
+          && voting.results.some(votes => votes >= voting.voteThreshold!)) || // Threshold reached
+        (voting.maxVoters !== undefined 
+          && voting.maxVoters > 0 
+          && voting.results.reduce((a, b) => a + b, 0) >= voting.maxVoters); // Max voters reached
+      
       
       if (shouldClose) {
         expiredIds.push(i);
@@ -115,7 +119,7 @@ export async function checkBeginVotings() {
         (!voting.maxVoters || voting.results.reduce((a, b) => a + b, 0) < voting.maxVoters)
     ) {
       // Open the voting
-      await closeVoting(votingId); // This will update the status to 'active'
+      await openVoting(votingId); // This will update the status to 'active'
       openedAny = true;
       // Add to active votings list
       await addActiveVoting(votingId, voting.endDate);
