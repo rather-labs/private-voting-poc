@@ -5,7 +5,7 @@ if (process.env.VERCEL) {
 import { UltraHonkBackend } from '@aztec/bb.js';
 import type { CompiledCircuit, ProofData } from '@noir-lang/types';
 import { createClient } from '@supabase/supabase-js';
-import { addActiveVoting, addInactiveVoting } from './voting-status';
+import { addActiveVoting, addInactiveVoting, checkExpiredVotings } from './voting-status';
 
 import JwtCircuitJSON from '@/public/circuit/jwtnoir.json' assert { type: 'json' };
 
@@ -144,6 +144,7 @@ export async function getVotingById(id: number): Promise<Voting | null> {
       endDate: voting.end_date,
       status: voting.status,
       maxVoters: voting.max_voters,
+      voteThreshold: voting.vote_threshold,
       isPublic: voting.is_public,
       options: voting.voting_options.map((vo: any) => ({
         name: vo.name,
@@ -243,6 +244,22 @@ export async function closeVoting(id: number): Promise<boolean> {
   }
 }
 
+// Open a voting
+export async function openVoting(id: number): Promise<boolean> {
+  try {
+    const { error } = await supabase
+      .from('votings')
+      .update({ status: 'active' })
+      .eq('id', id);
+
+    if (error) throw error;
+    return true;
+  } catch (error) {
+    console.error('Error opening voting:', error);
+    throw new Error('Failed to open voting');
+  }
+}
+
 // Add a vote to a voting
 export async function addVote(electionId: number, proof: ProofData, selectedOptionIndex: number) {
   try {
@@ -284,6 +301,8 @@ export async function addVote(electionId: number, proof: ProofData, selectedOpti
     });
 
     if (transactionError) throw transactionError;
+
+    checkExpiredVotings();
   } catch (error) {
     console.error('Error adding vote:', error);
     throw error;

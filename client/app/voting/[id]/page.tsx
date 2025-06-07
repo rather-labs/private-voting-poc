@@ -106,7 +106,9 @@ export default function VotingPage() {
             {/* Results Section - Only show if results are public or voting is closed */}
             {(voting.isPublic || voting.status === 'closed') && (
               <div className="mb-8">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Current Results</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                  {voting.status === 'closed' ? "Results" : "Current Votes"}
+                </h2>
                 <div className="bg-white p-4 rounded-lg shadow">
                   {(() => {
                     const totalVotes = voting.results.reduce((sum, votes) => sum + votes, 0);

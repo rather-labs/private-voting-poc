@@ -73,6 +73,7 @@ export default function CreateVoting() {
           ...formData,
           options: filteredOptions,
           maxVoters: formData.maxVoters ? Number(formData.maxVoters) : undefined,
+          voteThreshold: formData.voteThreshold ? Number(formData.voteThreshold) : undefined,
         }),
       });
 
@@ -262,7 +263,7 @@ export default function CreateVoting() {
               </div>
               <div className="space-y-4">
                 {formData.options.map((option, index) => (
-                  <div key={`option-${option.name}-${index}`} className="p-4 border border-gray-200 rounded-lg space-y-3">
+                  <div key={`option-${index}`} className="p-4 border border-gray-200 rounded-lg space-y-3">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
                         <label htmlFor={`option-${index}-name`} className="block text-sm font-medium text-gray-700 mb-1">

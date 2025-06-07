@@ -39,7 +39,7 @@ export async function GET(request: Request) {
   }
 }
 
-// POST /api/voting - Add new voting or nullifier
+// POST /api/voting - Add new voting or vote
 export async function POST(request: Request) {
   try {
     const body = await request.json();
