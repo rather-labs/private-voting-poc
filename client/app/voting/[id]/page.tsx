@@ -95,7 +95,7 @@ export default function VotingPage() {
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Voting Options</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {voting.options.map((option, index) => (
-                  <div key={index} className="bg-white p-4 rounded-lg shadow">
+                  <div key={`${option.name}-${index}`} className="bg-white p-4 rounded-lg shadow">
                     <h3 className="font-medium text-gray-900">{option.name}</h3>
                     <p className="text-gray-600 text-sm">{option.description}</p>
                   </div>
@@ -116,14 +116,14 @@ export default function VotingPage() {
                         <div className="space-y-2">
                           {voting.results.map((votes, index) => {
                             const option = voting.options[index];
-                            let percentage = totalVotes > 0 
+                            const percentage = totalVotes > 0 
                               ? (votes / totalVotes) * 100
                               : 0;
                             
                             const displayPercentage = percentage.toFixed(1);
                             
                             return (
-                              <div key={index} className="flex items-center gap-2">
+                              <div key={`${option.name}-${index}`} className="flex items-center gap-2">
                                 <div className="w-32 font-medium">{option.name}:</div>
                                 <div className="flex-1 h-4 bg-gray-200 rounded-full overflow-hidden">
                                   <div 

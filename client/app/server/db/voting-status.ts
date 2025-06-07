@@ -70,12 +70,22 @@ export async function checkExpiredVotings() {
     const votingId = activeVotingIds[i];
     const voting = votings.find(v => v.id === votingId);
     
-    if (voting && new Date(voting.endDate) <= now) {
-      expiredIds.push(i);
-      await closeVoting(votingId);
-    } else if (voting) {
-      // Since the array is sorted, we can stop checking once we find a non-expired voting
-      break;
+    if (voting) {
+      const hasReachedThreshold = voting.voteThreshold !== undefined && 
+        voting.results.some(votes => votes >= (voting.voteThreshold ?? 0)) || 
+        (voting.maxVoters && voting.results.reduce((a, b) => a + b, 0) >= voting.maxVoters);
+      
+      const shouldClose = 
+        new Date(voting.endDate) <= now || // Time expired
+        hasReachedThreshold; // Threshold reached
+      
+      if (shouldClose) {
+        expiredIds.push(i);
+        await closeVoting(votingId);
+      } else if (new Date(voting.endDate) > now) {
+        // Since the array is sorted, we can stop checking once we find a non-expired voting
+        break;
+      }
     }
   }
 
