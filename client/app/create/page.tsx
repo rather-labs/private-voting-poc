@@ -16,9 +16,10 @@ export default function CreateVoting() {
     description: "",
     startDate: "",
     endDate: "",
-    options: [{ name: "", description: "" }],
+    options: [{ name: "", description: "" }, { name: "", description: "" }],
     isPublic: false,
     maxVoters: "",
+    voteThreshold: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -31,14 +32,32 @@ export default function CreateVoting() {
     // Filter out options with empty names
     const filteredOptions = formData.options.filter(option => option.name.trim() !== "");
 
-    if (filteredOptions.length < 1) {
-      setError("Please add at least 1 voting option");
+    if (filteredOptions.length < 2) {
+      setError("Please add at least 2 voting options");
+      setLoading(false);
+      return;
+    }
+
+    // Check for duplicate option names
+    const optionNames = filteredOptions.map(option => option.name.trim().toLowerCase());
+    const uniqueOptionNames = new Set(optionNames);
+    if (uniqueOptionNames.size !== optionNames.length) {
+      setError("Each voting option must have a unique name");
+      setLoading(false);
+      return;
+    }
+
+    // Validate dates
+    const startDate = new Date(formData.startDate);
+    const endDate = new Date(formData.endDate);
+    if (endDate <= startDate) {
+      setError("End date must be later than start date");
       setLoading(false);
       return;
     }
 
     // Validate max voters if provided
-    if (formData.maxVoters && (isNaN(Number(formData.maxVoters)) || Number(formData.maxVoters) <= 0)) {
+    if (formData.maxVoters && (Number.isNaN(Number(formData.maxVoters)) || Number(formData.maxVoters) <= 0)) {
       setError("Maximum voters must be a positive number");
       setLoading(false);
       return;
@@ -94,7 +113,7 @@ export default function CreateVoting() {
   };
 
   const removeOption = (index: number) => {
-    if (formData.options.length <= 1) return; // Don't remove if it's the last option
+    if (formData.options.length <= 2) return; // Fix minimum ammount to 2 options
     setFormData((prev) => ({
       ...prev,
       options: prev.options.filter((_, i) => i !== index),
@@ -206,12 +225,31 @@ export default function CreateVoting() {
                     Leave empty for unlimited voters
                   </p>
                 </div>
+
+                <div>
+                  <label htmlFor="voteThreshold" className="block text-sm font-medium text-gray-700">
+                    Vote Threshold (Optional)
+                  </label>
+                  <input
+                    type="number"
+                    id="voteThreshold"
+                    name="voteThreshold"
+                    min="1"
+                    value={formData.voteThreshold}
+                    onChange={handleChange}
+                    placeholder="No threshold"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  />
+                  <p className="mt-1 text-sm text-gray-500">
+                    Election will end when any option reaches this number of votes
+                  </p>
+                </div>
               </div>
             </div>
 
             <div>
               <div className="flex justify-between items-center mb-4">
-                <label className="block text-sm font-medium text-gray-700">
+                <label htmlFor="voting-options" className="block text-sm font-medium text-gray-700">
                   Voting Options
                 </label>
                 <button
@@ -224,14 +262,15 @@ export default function CreateVoting() {
               </div>
               <div className="space-y-4">
                 {formData.options.map((option, index) => (
-                  <div key={index} className="p-4 border border-gray-200 rounded-lg space-y-3">
+                  <div key={`option-${option.name}-${index}`} className="p-4 border border-gray-200 rounded-lg space-y-3">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor={`option-${index}-name`} className="block text-sm font-medium text-gray-700 mb-1">
                           Option Name
                         </label>
                         <input
                           type="text"
+                          id={`option-${index}-name`}
                           value={option.name}
                           onChange={(e) => handleOptionChange(index, "name", e.target.value)}
                           placeholder={`Option ${index + 1} Name`}
@@ -239,7 +278,7 @@ export default function CreateVoting() {
                           className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                         />
                       </div>
-                      {formData.options.length > 1 && (
+                      {formData.options.length > 2 && (
                         <button
                           type="button"
                           onClick={() => removeOption(index)}
@@ -250,10 +289,14 @@ export default function CreateVoting() {
                       )}
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label 
+                        htmlFor={`option-${index}-description`}
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Option Description
                       </label>
                       <textarea
+                        id={`option-${index}-description`}
                         value={option.description}
                         onChange={(e) => handleOptionChange(index, "description", e.target.value)}
                         placeholder={`Option ${index + 1} Description`}

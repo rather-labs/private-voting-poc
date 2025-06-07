@@ -39,6 +39,7 @@ This guide will help you set up and configure Supabase for the voting applicatio
      end_date TIMESTAMP WITH TIME ZONE NOT NULL,
      status TEXT NOT NULL CHECK (status IN ('active', 'closed', 'pending')),
      max_voters INTEGER,
+     vote_threshold INTEGER,
      is_public BOOLEAN NOT NULL DEFAULT false
    );
 
@@ -88,6 +89,7 @@ This guide will help you set up and configure Supabase for the voting applicatio
        end_date TIMESTAMP WITH TIME ZONE NOT NULL,
        status TEXT NOT NULL CHECK (status IN ('active', 'closed', 'pending')),
        max_voters INTEGER,
+       vote_threshold INTEGER,
        is_public BOOLEAN NOT NULL DEFAULT false
      );
    END;
@@ -158,6 +160,7 @@ The application uses the following tables:
    - `end_date`: TIMESTAMP WITH TIME ZONE NOT NULL
    - `status`: TEXT NOT NULL (active/closed/pending)
    - `max_voters`: INTEGER
+   - `vote_threshold`: INTEGER
    - `is_public`: BOOLEAN NOT NULL DEFAULT false
 
 2. **voting_options**

@@ -11,8 +11,8 @@ import JwtCircuitJSON from '@/public/circuit/jwtnoir.json' assert { type: 'json'
 
 // Initialize Supabase client
 const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
+  process.env.SUPABASE_SERVICE_ROLE_KEY ?? ''
 );
 
 // Initialize database tables
@@ -54,6 +54,7 @@ export interface Voting {
   endDate: string;
   status: 'active' | 'closed' | 'pending';
   maxVoters?: number;
+  voteThreshold?: number;
   isPublic: boolean;
   options: {
     name: string;
@@ -101,6 +102,7 @@ export async function getVotings(): Promise<Voting[]> {
       endDate: v.end_date,
       status: v.status,
       maxVoters: v.max_voters,
+      voteThreshold: v.vote_threshold,
       isPublic: v.is_public,
       options: v.voting_options.map((vo: any) => ({
         name: vo.name,
@@ -185,6 +187,7 @@ export async function addVoting(voting: Voting): Promise<Voting> {
         end_date: voting.endDate,
         status,
         max_voters: voting.maxVoters,
+        vote_threshold: voting.voteThreshold,
         is_public: voting.isPublic
       })
       .select()
