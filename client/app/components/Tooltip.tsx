@@ -41,7 +41,7 @@ export default function Tooltip({ text, children, position = 'bottom', showIcon 
         >
           <div className="inline-flex items-center">
             <svg
-              className="h-4 w-4 text-black hover:text-black cursor-help"
+              className="h-4 w-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 cursor-help transition-colors"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -57,7 +57,7 @@ export default function Tooltip({ text, children, position = 'bottom', showIcon 
           </div>
           {isVisible && (
             <div
-              className={`absolute z-50 px-3 py-2 text-sm text-white bg-gray-900 rounded-lg shadow-lg w-max ${positionClasses[position]}`}
+              className={`absolute z-50 px-3 py-2 text-sm text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg w-max border border-gray-700 dark:border-gray-600 ${positionClasses[position]}`}
               role="tooltip"
             >
               <div 
@@ -65,7 +65,7 @@ export default function Tooltip({ text, children, position = 'bottom', showIcon 
                 dangerouslySetInnerHTML={{ __html: text }}
               />
               <div
-                className={`absolute w-2 h-2 bg-gray-900 transform rotate-45 ${arrowClasses[position]}`}
+                className={`absolute w-2 h-2 bg-gray-100 dark:bg-gray-800 transform rotate-45 border-l border-t border-gray-700 dark:border-gray-600 ${arrowClasses[position]}`}
               />
             </div>
           )}

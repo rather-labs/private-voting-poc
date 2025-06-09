@@ -20,7 +20,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-white shadow-lg">
+    <nav className="bg-white dark:bg-gray-900 shadow-lg border-b border-gray-200 dark:border-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center space-x-4">
@@ -33,7 +33,7 @@ export default function Navbar() {
                 className="rounded-full"
               />
               <Tooltip text={tooltipTexts.title} showIcon position="bottom-right">
-                <span className="text-xl font-bold text-black">
+                <span className="text-xl font-bold text-gray-900 dark:text-white">
                   Rather Labs Private Voting PoC
                 </span>
               </Tooltip>
@@ -57,10 +57,10 @@ export default function Navbar() {
                     />
                   )}
                   <div className="flex flex-col">
-                    <span className="text-sm font-medium text-black">
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">
                       {session.user?.name}
                     </span>
-                    <span className="text-xs text-black">
+                    <span className="text-xs text-gray-600 dark:text-gray-300">
                       {session.user?.email}
                     </span>
                   </div>
@@ -69,7 +69,7 @@ export default function Navbar() {
                   <button
                     type="button"
                     onClick={handleSignOut}
-                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium"
+                    className="bg-red-100 hover:bg-red-200 dark:bg-red-600 dark:hover:bg-red-700 text-red-900 dark:text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
                   >
                     Sign Out
                   </button>
@@ -80,7 +80,7 @@ export default function Navbar() {
                 <button
                   type="button"
                   onClick={() => signIn("google", { callbackUrl: window.location.pathname })}
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium"
+                  className="bg-blue-100 hover:bg-blue-200 dark:bg-blue-600 dark:hover:bg-blue-700 text-blue-900 dark:text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
                 >
                   Sign In
                 </button>

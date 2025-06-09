@@ -31,36 +31,36 @@ const VotingGrid = ({
 }: VotingGridProps) => (
   <div className="mb-12">
     <div className="flex justify-between items-center mb-6">
-      <h2 className="text-2xl font-bold text-black">{title}</h2>
+      <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{title}</h2>
       <div className="flex items-center space-x-2">
         <input
           type="text"
-          placeholder={`Search ${title.toLowerCase()}...`}
+          placeholder={`Search elections...`}
           value={searchQuery}
           onChange={(e) => {
             const value = e.target.value;
             setSearchQuery(value);
             setCurrentPage(1);
           }}
-          className="px-2 py-1 text-sm border rounded-md text-black placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-indigo-500 w-48"
+          className="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md text-gray-900 dark:text-white bg-white dark:bg-gray-800 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:focus:ring-indigo-400 w-48"
         />
         <div className="flex items-center space-x-1">
           <button
             type="button"
             onClick={() => setCurrentPage(Math.max(currentPage - 1, 1))}
             disabled={currentPage === 1 || filteredVotings.length === 0}
-            className="px-2 py-1 text-sm border rounded-md text-black disabled:opacity-50"
+            className="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md text-gray-900 dark:text-white bg-white dark:bg-gray-800 disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
           >
             ←
           </button>
-          <span className="px-1 text-sm text-black">
+          <span className="px-1 text-sm text-gray-900 dark:text-white">
             {filteredVotings.length === 0 ? "0/0" : `${currentPage}/${totalPages}`}
           </span>
           <button
             type="button"
             onClick={() => setCurrentPage(Math.min(currentPage + 1, totalPages))}
             disabled={currentPage === totalPages || filteredVotings.length === 0}
-            className="px-2 py-1 text-sm border rounded-md text-black disabled:opacity-50"
+            className="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md text-gray-900 dark:text-white bg-white dark:bg-gray-800 disabled:opacity-50 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
           >
             →
           </button>
@@ -68,26 +68,26 @@ const VotingGrid = ({
       </div>
     </div>
     {filteredVotings.length === 0 ? (
-      <div className="text-center text-black">No {title.toLowerCase()} at the moment</div>
+      <div className="text-center text-gray-900 dark:text-white">No {title.toLowerCase()} at the moment</div>
     ) : (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredVotings.map((voting) => (
           <Link
             key={allVotings.indexOf(voting)+1}
             href={`/voting/${allVotings.indexOf(voting)+1}`}
-            className="block bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
+            className="block bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md dark:shadow-gray-900/20 dark:hover:shadow-gray-900/40 transition-shadow duration-200 border border-gray-200 dark:border-gray-700"
           >
             <div className="p-6">
-              <h3 className="text-xl font-semibold text-black mb-2">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
                 {voting.title}
               </h3>
-              <p className="text-black mb-4 line-clamp-2">
+              <p className="text-gray-700 dark:text-gray-300 mb-4 line-clamp-2">
                 {voting.description}
               </p>
-              <div className="flex justify-between text-sm text-black">
+              <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
                 <div>Start: {formatLocalDate(voting.startDate)}</div>
               </div>
-              <div className="flex justify-between text-sm text-black">
+              <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
                 <div>End: {formatLocalDate(voting.endDate)}</div>
               </div>
             </div>
@@ -157,16 +157,16 @@ export default function Home() {
   const closedData = getFilteredAndPaginatedVotings('closed', closedSearch, closedPage);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       <Navbar />
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold text-black">Elections</h1>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Elections</h1>
             <Tooltip text={tooltipTexts.createElectionHome} showIcon>
               <Link
                 href="/create"
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-gray-900 dark:text-white bg-indigo-100 dark:bg-indigo-700 hover:bg-indigo-200 dark:hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition-colors"
               >
                 Create New Election
               </Link>
@@ -174,9 +174,9 @@ export default function Home() {
           </div>
           
           {loading ? (
-            <div className="text-center">Loading...</div>
+            <div className="text-center text-gray-900 dark:text-white">Loading...</div>
           ) : error ? (
-            <div className="text-center text-red-600">{error}</div>
+            <div className="text-center text-red-600 dark:text-red-400">{error}</div>
           ) : (
             <>
               <VotingGrid 

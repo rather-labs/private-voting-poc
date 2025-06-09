@@ -144,15 +144,15 @@ export default function CreateVoting() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       <Navbar />
       <main className="max-w-3xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
-          <h1 className="text-3xl font-bold text-black mb-8">Create New Election</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Create New Election</h1>
           
-          <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg shadow-sm">
+          <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <div>
-              <label htmlFor="title" className="block text-sm font-medium text-black">
+              <label htmlFor="title" className="block text-sm font-medium text-gray-900 dark:text-white">
                 Title
               </label>
               <input
@@ -162,12 +162,12 @@ export default function CreateVoting() {
                 required
                 value={formData.title}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-black bg-white px-3 py-2"
+                className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400 text-gray-900 dark:text-white bg-white dark:bg-gray-700 px-3 py-2 transition-colors"
               />
             </div>
 
             <div>
-              <label htmlFor="description" className="block text-sm font-medium text-black">
+              <label htmlFor="description" className="block text-sm font-medium text-gray-900 dark:text-white">
                 Description
               </label>
               <textarea
@@ -177,13 +177,13 @@ export default function CreateVoting() {
                 rows={4}
                 value={formData.description}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-black bg-white px-3 py-2"
+                className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400 text-gray-900 dark:text-white bg-white dark:bg-gray-700 px-3 py-2 transition-colors"
               />
             </div>
 
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div>
-                <label htmlFor="startDate" className="block text-sm font-medium text-black">
+                <label htmlFor="startDate" className="block text-sm font-medium text-gray-900 dark:text-white">
                   Start Date
                 </label>
                 <input
@@ -193,12 +193,12 @@ export default function CreateVoting() {
                   required
                   value={formData.startDate}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-black bg-white px-3 py-2"
+                  className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400 text-gray-900 dark:text-white bg-white dark:bg-gray-700 px-3 py-2 transition-colors"
                 />
               </div>
 
               <div>
-                <label htmlFor="endDate" className="block text-sm font-medium text-black">
+                <label htmlFor="endDate" className="block text-sm font-medium text-gray-900 dark:text-white">
                   End Date
                 </label>
                 <input
@@ -208,13 +208,13 @@ export default function CreateVoting() {
                   required
                   value={formData.endDate}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-black bg-white px-3 py-2"
+                  className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400 text-gray-900 dark:text-white bg-white dark:bg-gray-700 px-3 py-2 transition-colors"
                 />
               </div>
             </div>
 
-            <div className="border-t border-gray-200 pt-6">
-              <h3 className="text-lg font-medium text-black mb-4">Voting Settings</h3>
+            <div className="border-t border-gray-200 dark:border-gray-600 pt-6">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Voting Settings</h3>
               <div className="space-y-4">
                 <div className="flex items-center">
                   <input
@@ -223,15 +223,15 @@ export default function CreateVoting() {
                     name="isPublic"
                     checked={formData.isPublic}
                     onChange={(e) => setFormData(prev => ({ ...prev, isPublic: e.target.checked }))}
-                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-400 border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700"
                   />
-                  <label htmlFor="isPublic" className="ml-2 block text-sm text-black">
+                  <label htmlFor="isPublic" className="ml-2 block text-sm text-gray-900 dark:text-white">
                     Show results publicly before voting finalization
                   </label>
                 </div>
 
                 <div>
-                  <label htmlFor="maxVoters" className="block text-sm font-medium text-black">
+                  <label htmlFor="maxVoters" className="block text-sm font-medium text-gray-900 dark:text-white">
                     Maximum Number of Voters (Optional)
                   </label>
                   <input
@@ -242,15 +242,15 @@ export default function CreateVoting() {
                     value={formData.maxVoters}
                     onChange={handleChange}
                     placeholder="No limit"
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-black bg-white px-3 py-2"
+                    className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400 text-gray-900 dark:text-white bg-white dark:bg-gray-700 px-3 py-2 placeholder-gray-400 dark:placeholder-gray-500 transition-colors"
                   />
-                  <p className="mt-1 text-sm text-black">
+                  <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                     Leave empty for unlimited voters
                   </p>
                 </div>
 
                 <div>
-                  <label htmlFor="voteThreshold" className="block text-sm font-medium text-black">
+                  <label htmlFor="voteThreshold" className="block text-sm font-medium text-gray-900 dark:text-white">
                     Vote Threshold (Optional)
                   </label>
                   <input
@@ -261,9 +261,9 @@ export default function CreateVoting() {
                     value={formData.voteThreshold}
                     onChange={handleChange}
                     placeholder="No threshold"
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-black bg-white px-3 py-2"
+                    className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400 text-gray-900 dark:text-white bg-white dark:bg-gray-700 px-3 py-2 placeholder-gray-400 dark:placeholder-gray-500 transition-colors"
                   />
-                  <p className="mt-1 text-sm text-black">
+                  <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                     Election will end when any option reaches this number of votes
                   </p>
                 </div>
@@ -272,23 +272,23 @@ export default function CreateVoting() {
 
             <div>
               <div className="flex justify-between items-center mb-4">
-                <label htmlFor="voting-options" className="block text-sm font-medium text-black">
+                <label htmlFor="voting-options" className="block text-sm font-medium text-gray-900 dark:text-white">
                   Voting Options
                 </label>
                 <button
                   type="button"
                   onClick={addOption}
-                  className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-indigo-700 dark:text-indigo-300 bg-indigo-100 dark:bg-indigo-900 hover:bg-indigo-200 dark:hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition-colors"
                 >
                   Add Option
                 </button>
               </div>
               <div className="space-y-4">
                 {formData.options.map((option, index) => (
-                  <div key={`option-${index}`} className="p-4 border border-gray-200 rounded-lg space-y-3">
+                  <div key={`voting-option-${index}-${option.name || 'empty'}`} className="p-4 border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 rounded-lg space-y-3">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
-                        <label htmlFor={`option-${index}-name`} className="block text-sm font-medium text-black mb-1">
+                        <label htmlFor={`option-${index}-name`} className="block text-sm font-medium text-gray-900 dark:text-white mb-1">
                           Option Name
                         </label>
                         <input
@@ -298,14 +298,14 @@ export default function CreateVoting() {
                           onChange={(e) => handleOptionChange(index, "name", e.target.value)}
                           placeholder={`Option ${index + 1} Name`}
                           required
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-black bg-white px-3 py-2"
+                          className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400 text-gray-900 dark:text-white bg-white dark:bg-gray-800 px-3 py-2 placeholder-gray-400 dark:placeholder-gray-500 transition-colors"
                         />
                       </div>
                       {formData.options.length > 2 && (
                         <button
                           type="button"
                           onClick={() => removeOption(index)}
-                          className="ml-4 inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                          className="ml-4 inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-red-700 dark:text-red-300 bg-red-100 dark:bg-red-900 hover:bg-red-200 dark:hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-red-400 transition-colors"
                         >
                           Remove
                         </button>
@@ -314,7 +314,7 @@ export default function CreateVoting() {
                     <div>
                       <label 
                         htmlFor={`option-${index}-description`}
-                        className="block text-sm font-medium text-black mb-1"
+                        className="block text-sm font-medium text-gray-900 dark:text-white mb-1"
                       >
                         Option Description
                       </label>
@@ -324,7 +324,7 @@ export default function CreateVoting() {
                         onChange={(e) => handleOptionChange(index, "description", e.target.value)}
                         placeholder={`Option ${index + 1} Description`}
                         rows={2}
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-black bg-white px-3 py-2"
+                        className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-indigo-500 dark:focus:ring-indigo-400 text-gray-900 dark:text-white bg-white dark:bg-gray-800 px-3 py-2 placeholder-gray-400 dark:placeholder-gray-500 transition-colors"
                       />
                     </div>
                   </div>
@@ -333,7 +333,7 @@ export default function CreateVoting() {
             </div>
 
             {error && (
-              <div className="text-red-600 text-sm">{error}</div>
+              <div className="text-red-600 dark:text-red-400 text-sm bg-red-50 dark:bg-red-900/20 p-3 rounded-md border border-red-200 dark:border-red-800">{error}</div>
             )}
 
             <div className="flex justify-end">
@@ -341,7 +341,7 @@ export default function CreateVoting() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
+                  className="inline-flex justify-center rounded-md border border-transparent bg-indigo-100 dark:bg-indigo-700 py-2 px-4 text-sm font-medium text-gray-900 dark:text-white shadow-sm hover:bg-indigo-200 dark:hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:ring-offset-2 disabled:opacity-50 transition-colors"
                 >
                   {loading ? "Creating..." : "Create Election"}
                 </button>

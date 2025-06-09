@@ -161,11 +161,11 @@ export default function VotingProofGeneration({ voting, setVoting }: ProofGenera
           value={selectedOption === null ? '' : selectedOption}
           disabled={isSubmittingVote || hasVoted}
           onChange={(e) => setSelectedOption(Number(e.target.value))}
-          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm text-black"
+          className="block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-purple-500 dark:focus:border-purple-400 focus:ring-purple-500 dark:focus:ring-purple-400 sm:text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-700 transition-colors"
         >
-          <option value="" className="text-black">Choose an option</option>
+          <option value="" className="text-gray-900 dark:text-white">Choose an option</option>
           {voting.options.map((option, index) => (
-            <option key={option.name} value={index} className="text-black">
+            <option key={option.name} value={index} className="text-gray-900 dark:text-white">
               {option.name}
             </option>
           ))}
@@ -179,7 +179,7 @@ export default function VotingProofGeneration({ voting, setVoting }: ProofGenera
               type="button"
               onClick={generateNoirProof}
               disabled={isGeneratingProof || isSubmittingVote }
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed w-fit"
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-gray-900 dark:text-white bg-purple-100 dark:bg-purple-700 hover:bg-purple-200 dark:hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:focus:ring-purple-400 disabled:opacity-50 disabled:cursor-not-allowed w-fit transition-colors"
             >
               {isGeneratingProof ? "Generating..." : "Generate Proof"}
             </button>
@@ -190,25 +190,25 @@ export default function VotingProofGeneration({ voting, setVoting }: ProofGenera
               type="button"
               onClick={submitVote}
               disabled={!proof || selectedOption === null || isSubmittingVote || isGeneratingProof || hasVoted}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed w-fit"
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-gray-900 dark:text-white bg-green-100 dark:bg-green-700 hover:bg-green-200 dark:hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 dark:focus:ring-green-400 disabled:opacity-50 disabled:cursor-not-allowed w-fit transition-colors"
             >
               {isSubmittingVote ? "Verifying Proof & Submitting Vote..." : "Verify Proof & Submit Vote"}
             </button>
           </Tooltip>
         </div>
       ) : (
-        <div className="text-sm text-black">
+        <div className="text-sm text-gray-900 dark:text-white">
           Please sign in to vote
         </div>
       )}
 
       {hasVoted && (
-        <div className="text-sm text-black">
+        <div className="text-sm text-gray-900 dark:text-white bg-green-50 dark:bg-green-900/20 p-3 rounded-md border border-green-200 dark:border-green-800">
           {message}
         </div>
       )}
       {error && (
-        <div className="text-sm text-red-600">
+        <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-3 rounded-md border border-red-200 dark:border-red-800">
           {error}
         </div>
       )}
