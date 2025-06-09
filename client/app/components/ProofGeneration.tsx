@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams } from "next/navigation";
 import { generateInputs } from "noir-jwt";
 import { generateProof } from "../utils/noir";
@@ -88,7 +88,6 @@ export default function VotingProofGeneration({ voting, setVoting }: ProofGenera
         setMessage('This account has already cast a vote in this election');
       } 
     } catch (err) {
-      console.error('Error checking nullifier:', err);
       setError(err instanceof Error ? err.message : 'Failed to check if you have voted');
     }
   }
@@ -106,7 +105,6 @@ export default function VotingProofGeneration({ voting, setVoting }: ProofGenera
       // Check if the nullifier has already voted
       await checkNullifier(generatedProof.publicInputs[1]);
     } catch (err: unknown) {
-      console.error("Error generating proof:", err);
       const errorMessage = err instanceof Error ? err.message : "Failed to generate proof";
       setError(errorMessage);
     } finally {
@@ -134,7 +132,8 @@ export default function VotingProofGeneration({ voting, setVoting }: ProofGenera
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error || 'Failed to submit vote');
+        //throw new Error(data.error || 'Failed to submit vote');
+        throw new Error('Failed to submit vote. Try again later. If the problem persists, add an issue on GitHub.');
       }
 
       // Show success message
