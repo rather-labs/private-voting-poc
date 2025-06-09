@@ -134,7 +134,7 @@ export default function CreateVoting() {
   };
 
   const removeOption = (index: number) => {
-    if (formData.options.length <= 2) return; // Fix minimum ammount to 2 options
+    if (formData.options.length <= 2) return;
     setFormData((prev) => ({
       ...prev,
       options: prev.options.filter((_, i) => i !== index),
@@ -160,7 +160,7 @@ export default function CreateVoting() {
                 required
                 value={formData.title}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-gray-900 bg-white"
               />
             </div>
 
@@ -175,7 +175,7 @@ export default function CreateVoting() {
                 rows={4}
                 value={formData.description}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-gray-900 bg-white"
               />
             </div>
 
@@ -191,7 +191,7 @@ export default function CreateVoting() {
                   required
                   value={formData.startDate}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-gray-900 bg-white"
                 />
               </div>
 
@@ -206,7 +206,7 @@ export default function CreateVoting() {
                   required
                   value={formData.endDate}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-gray-900 bg-white"
                 />
               </div>
             </div>
@@ -240,7 +240,7 @@ export default function CreateVoting() {
                     value={formData.maxVoters}
                     onChange={handleChange}
                     placeholder="No limit"
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-gray-900 bg-white"
                   />
                   <p className="mt-1 text-sm text-gray-500">
                     Leave empty for unlimited voters
@@ -259,7 +259,7 @@ export default function CreateVoting() {
                     value={formData.voteThreshold}
                     onChange={handleChange}
                     placeholder="No threshold"
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-gray-900 bg-white"
                   />
                   <p className="mt-1 text-sm text-gray-500">
                     Election will end when any option reaches this number of votes
@@ -283,8 +283,7 @@ export default function CreateVoting() {
               </div>
               <div className="space-y-4">
                 {formData.options.map((option, index) => (
-                  <div key={`option-${// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                                      index}`} className="p-4 border border-gray-200 rounded-lg space-y-3">
+                  <div key={`option-${index}`} className="p-4 border border-gray-200 rounded-lg space-y-3">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
                         <label htmlFor={`option-${index}-name`} className="block text-sm font-medium text-gray-700 mb-1">
@@ -297,7 +296,7 @@ export default function CreateVoting() {
                           onChange={(e) => handleOptionChange(index, "name", e.target.value)}
                           placeholder={`Option ${index + 1} Name`}
                           required
-                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-gray-900 bg-white"
                         />
                       </div>
                       {formData.options.length > 2 && (
@@ -323,7 +322,7 @@ export default function CreateVoting() {
                         onChange={(e) => handleOptionChange(index, "description", e.target.value)}
                         placeholder={`Option ${index + 1} Description`}
                         rows={2}
-                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-gray-900 bg-white"
                       />
                     </div>
                   </div>
@@ -349,4 +348,4 @@ export default function CreateVoting() {
       </main>
     </div>
   );
-} 
+}
