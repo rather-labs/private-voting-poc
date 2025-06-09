@@ -34,12 +34,12 @@ export default function Tooltip({ text, children, position = 'bottom', showIcon 
     <div className="relative inline-flex items-center">
       {children}
       {showIcon && (
-        <div className="relative inline-flex items-center ml-1">
-          <div
-            onMouseEnter={() => setIsVisible(true)}
-            onMouseLeave={() => setIsVisible(false)}
-            className="inline-flex items-center"
-          >
+        <div 
+          className="relative inline-flex items-center ml-1"
+          onMouseEnter={() => setIsVisible(true)}
+          onMouseLeave={() => setIsVisible(false)}
+        >
+          <div className="inline-flex items-center">
             <svg
               className="h-4 w-4 text-gray-400 hover:text-gray-500 cursor-help"
               fill="none"

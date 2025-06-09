@@ -3,7 +3,8 @@ export const tooltipTexts = {
 It provides an example of using <b>noir circuits</b> with the <b>noir-jwt</b> library. 
 This library allows to generate proofs from any JWT. 
 In this case the <b>login token</b> with a <b>google account</b> is used.
-This is <b>NOT</b> a production-ready application.`,
+This is <b>NOT</b> a production-ready application.
+You can check the circuits and app in our <b><a href="https://github.com/rather-labs/private-voting-poc" onclick="window.open(this.href, '_blank')">github repository</a></b>`,
   signIn: `Sign in to participate in elections.
 This will generate the JWT token that is used to generate the proof`,
   signOut: `Sign out of your account.
