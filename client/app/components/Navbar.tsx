@@ -4,9 +4,11 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Tooltip from "./Tooltip";
+import { tooltipTexts } from "../utils/tooltipTexts";
 
 export default function Navbar() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
 
   const handleSignOut = async () => {
@@ -30,9 +32,11 @@ export default function Navbar() {
                 height={32}
                 className="rounded-full"
               />
-              <span className="text-xl font-bold text-gray-800">
-                Rather Labs Private Voting PoC
-              </span>
+              <Tooltip text={tooltipTexts.title} showIcon position="bottom-right">
+                <span className="text-xl font-bold text-gray-800">
+                  Rather Labs Private Voting PoC
+                </span>
+              </Tooltip>
             </Link>
           
           </div>
@@ -61,22 +65,26 @@ export default function Navbar() {
                     </span>
                   </div>
                 </div>
-                <button
-                  type="button"
-                  onClick={handleSignOut}
-                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium"
-                >
-                  Sign Out
-                </button>
+                <Tooltip text={tooltipTexts.signOut} showIcon>
+                  <button
+                    type="button"
+                    onClick={handleSignOut}
+                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium"
+                  >
+                    Sign Out
+                  </button>
+                </Tooltip>
               </div>
             ) : (
-              <button
-                type="button"
-                onClick={() => signIn("google", { callbackUrl: window.location.pathname })}
-                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium"
-              >
-                Sign In
-              </button>
+              <Tooltip text={tooltipTexts.signIn} showIcon>
+                <button
+                  type="button"
+                  onClick={() => signIn("google", { callbackUrl: window.location.pathname })}
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium"
+                >
+                  Sign In
+                </button>
+              </Tooltip>
             )}
           </div>
         </div>

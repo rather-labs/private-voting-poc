@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "../components/Navbar";
 import { toUTCDate } from "../utils/locale";
+import Tooltip from "../components/Tooltip";
+import { tooltipTexts } from "../utils/tooltipTexts";
 
 interface VotingOption {
   name: string;
@@ -335,13 +337,15 @@ export default function CreateVoting() {
             )}
 
             <div className="flex justify-end">
-              <button
-                type="submit"
-                disabled={loading}
-                className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
-              >
-                {loading ? "Creating..." : "Create Election"}
-              </button>
+              <Tooltip text={tooltipTexts.createElectionForm} showIcon position="top-left">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
+                >
+                  {loading ? "Creating..." : "Create Election"}
+                </button>
+              </Tooltip>
             </div>
           </form>
         </div>

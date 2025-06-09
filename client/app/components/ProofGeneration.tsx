@@ -8,6 +8,8 @@ import { generateProof } from "../utils/noir";
 import type { CompiledCircuit, InputMap, ProofData } from "@noir-lang/types";
 import type { Voting } from "../server/db/voting-db";
 import JwtCircuitJSON from '@/public/circuit/jwtnoir.json' assert { type: 'json' };
+import Tooltip from "./Tooltip";
+import { tooltipTexts } from "../utils/tooltipTexts";
 
 interface ExtendedSession {
   idToken?: string;
@@ -176,23 +178,27 @@ export default function VotingProofGeneration({ voting, setVoting }: ProofGenera
 
       {status === "authenticated" ? (
         <div className="flex flex-col space-y-4">
-          <button
-            type="button"
-            onClick={generateNoirProof}
-            disabled={isGeneratingProof || isSubmittingVote }
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed w-fit"
-          >
-            {isGeneratingProof ? "Generating..." : "Generate Proof"}
-          </button>
+          <Tooltip text={tooltipTexts.generateProof} showIcon position="top-right">
+            <button
+              type="button"
+              onClick={generateNoirProof}
+              disabled={isGeneratingProof || isSubmittingVote }
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed w-fit"
+            >
+              {isGeneratingProof ? "Generating..." : "Generate Proof"}
+            </button>
+          </Tooltip>
 
-          <button
-            type="button"
-            onClick={submitVote}
-            disabled={!proof || selectedOption === null || isSubmittingVote || isGeneratingProof || hasVoted}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed w-fit"
-          >
-            {isSubmittingVote ? "Verifying Proof & Submitting Vote..." : "Verify Proof & Submit Vote"}
-          </button>
+          <Tooltip text={tooltipTexts.verifyProof} showIcon position="top-right">
+            <button
+              type="button"
+              onClick={submitVote}
+              disabled={!proof || selectedOption === null || isSubmittingVote || isGeneratingProof || hasVoted}
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed w-fit"
+            >
+              {isSubmittingVote ? "Verifying Proof & Submitting Vote..." : "Verify Proof & Submit Vote"}
+            </button>
+          </Tooltip>
         </div>
       ) : (
         <div className="text-sm text-gray-500">
