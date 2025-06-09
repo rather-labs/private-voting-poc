@@ -6,6 +6,7 @@ import Navbar from "../../components/Navbar";
 import { Toaster } from 'react-hot-toast';
 import VotingProofGeneration from "../../components/ProofGeneration";
 import type { Voting } from "../../server/db/voting-db";
+import { formatLocalDate } from "../../utils/locale";
 
 export default function VotingPage() {
   const params = useParams();
@@ -82,12 +83,27 @@ export default function VotingPage() {
                 {voting.status === 'active' ? 'Open' : voting.status === 'pending' ? 'Upcoming' : 'Closed'}
               </div>
             </div>
-            <p className="text-gray-600 mb-4">{voting.description}</p>
-            <div className="flex flex-wrap gap-4 text-sm text-gray-500 mb-4">
-              <div>Start: {new Date(voting.startDate).toLocaleString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
-              <div>End: {new Date(voting.endDate).toLocaleString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
-              {voting.maxVoters && <div>Max Voters: {voting.maxVoters}</div>}
-              <div>Partial Results: {voting.isPublic ? 'Public' : 'Private'}</div>
+            <div className="mb-8">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">Election Details</h2>
+              <div className="bg-white p-4 rounded-lg shadow">
+                <p className="text-gray-600 mb-4">{voting.description}</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Start Date:</span>{" "}
+                    {formatLocalDate(voting.startDate)}
+                  </div>
+                  <div>
+                    <span className="font-medium">End Date:</span>{" "}
+                    {formatLocalDate(voting.endDate)}
+                  </div>
+                  {voting.maxVoters && (
+                    <div>
+                      <span className="font-medium">Maximum Voters:</span>{" "}
+                      {voting.maxVoters}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
 
             {/* Voting Options */}

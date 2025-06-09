@@ -3,19 +3,37 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "../components/Navbar";
+import { toUTCDate } from "../utils/locale";
 
 interface VotingOption {
   name: string;
   description: string;
 }
 
+// Helper function to format date for datetime-local input
+function formatDateForInput(date: Date): string {
+  return date.toLocaleString('en-US', {
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  }).replace(/(\d+)\/(\d+)\/(\d+),\s(\d+):(\d+):(\d+)/, '$3-$1-$2T$4:$5:$6');
+}
+
 export default function CreateVoting() {
   const router = useRouter();
+  const now = new Date();
+  const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+  
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    startDate: "",
-    endDate: "",
+    startDate: formatDateForInput(now),
+    endDate: formatDateForInput(tomorrow),
     options: [{ name: "", description: "" }, { name: "", description: "" }],
     isPublic: false,
     maxVoters: "",
@@ -71,6 +89,8 @@ export default function CreateVoting() {
         },
         body: JSON.stringify({
           ...formData,
+          startDate: toUTCDate(formData.startDate),
+          endDate: toUTCDate(formData.endDate),
           options: filteredOptions,
           maxVoters: formData.maxVoters ? Number(formData.maxVoters) : undefined,
           voteThreshold: formData.voteThreshold ? Number(formData.voteThreshold) : undefined,
@@ -263,7 +283,8 @@ export default function CreateVoting() {
               </div>
               <div className="space-y-4">
                 {formData.options.map((option, index) => (
-                  <div key={`option-${index}`} className="p-4 border border-gray-200 rounded-lg space-y-3">
+                  <div key={`option-${// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                                      index}`} className="p-4 border border-gray-200 rounded-lg space-y-3">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
                         <label htmlFor={`option-${index}-name`} className="block text-sm font-medium text-gray-700 mb-1">

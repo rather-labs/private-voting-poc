@@ -162,17 +162,20 @@ export async function getVotingById(id: number): Promise<Voting | null> {
 export async function addVoting(voting: Voting): Promise<Voting> {
   try {
     const currentDate = new Date();
-    const beginDate = new Date(voting.startDate);
-    const endDate = new Date(voting.endDate);
+    const beginDate = new Date(voting.startDate); // Convert to UTC
+    const endDate = new Date(voting.endDate); // Convert to UTC
+    console.log(beginDate);
+    console.log(endDate);
+    console.log(currentDate);
 
     if (beginDate >= endDate) {
       throw new Error('Start date must be before end date');
     }
 
     let status: 'active' | 'closed' | 'pending' = 'pending';
-    if (beginDate > currentDate) {
+    if (beginDate.getTime() > currentDate.getTime()) {
       status = 'pending';
-    } else if (endDate <= currentDate) {
+    } else if (endDate.getTime() <= currentDate.getTime()) {
       status = 'closed';
     } else {
       status = 'active';

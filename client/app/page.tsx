@@ -4,20 +4,41 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Navbar from "./components/Navbar";
 import type { Voting } from "./server/db/voting-db";
+import { formatLocalDate } from "./utils/locale";
 
-const formatDate = (dateString: string) => {
-  try {
-    return new Date(dateString).toLocaleString(undefined, {
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  } catch (error) {
-    return 'Invalid date';
-  }
-};
+function VotingCard({ voting }: { voting: Voting }) {
+  return (
+    <div className="bg-white rounded-lg shadow p-6">
+      <h3 className="text-lg font-semibold text-gray-900 mb-2">{voting.title}</h3>
+      <p className="text-gray-600 text-sm mb-4 line-clamp-2">{voting.description}</p>
+      <div className="grid grid-cols-2 gap-4 text-sm text-gray-500 mb-4">
+        <div>
+          <span className="font-medium">Start:</span><br />
+          {formatLocalDate(voting.startDate)}
+        </div>
+        <div>
+          <span className="font-medium">End:</span><br />
+          {formatLocalDate(voting.endDate)}
+        </div>
+      </div>
+      <div className="flex justify-between items-center">
+        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+          voting.status === 'active' ? 'bg-green-100 text-green-800' :
+          voting.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+          'bg-red-100 text-red-800'
+        }`}>
+          {voting.status.charAt(0).toUpperCase() + voting.status.slice(1)}
+        </span>
+        <Link
+          href={`/voting/${voting.id}`}
+          className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          View Details
+        </Link>
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
   const [votings, setVotings] = useState<Voting[]>([]);
@@ -64,10 +85,10 @@ export default function Home() {
                   {voting.description}
                 </p>
                 <div className="flex justify-between text-sm text-gray-500">
-                  <div>Start: {formatDate(voting.startDate)}</div>
+                  <div>Start: {formatLocalDate(voting.startDate)}</div>
                 </div>
                 <div className="flex justify-between text-sm text-gray-500">
-                  <div>End: {formatDate(voting.endDate)}</div>
+                  <div>End: {formatLocalDate(voting.endDate)}</div>
                 </div>
               </div>
             </Link>
