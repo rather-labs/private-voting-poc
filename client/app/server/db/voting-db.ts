@@ -104,11 +104,11 @@ export async function getVotings(): Promise<Voting[]> {
       maxVoters: v.max_voters,
       voteThreshold: v.vote_threshold,
       isPublic: v.is_public,
-      options: v.voting_options.map((vo: any) => ({
+      options: v.voting_options.sort((a: any, b: any) => a.id - b.id).map((vo: any) => ({
         name: vo.name,
         description: vo.description
       })),
-      results: v.voting_options.map((vo: any) => vo.votes)
+      results: v.voting_options.sort((a: any, b: any) => a.id - b.id).map((vo: any) => vo.votes)
     }));
   } catch (error) {
     console.error('Error getting votings:', error);
@@ -124,13 +124,13 @@ export async function getVotingById(id: number): Promise<Voting | null> {
       .select(`
         *,
         voting_options (
+          id,
           name,
           description,
           votes
         )
       `)
-      .eq('id', id
-      )
+      .eq('id', id)
       .single();
 
     if (error) throw error;
@@ -146,11 +146,11 @@ export async function getVotingById(id: number): Promise<Voting | null> {
       maxVoters: voting.max_voters,
       voteThreshold: voting.vote_threshold,
       isPublic: voting.is_public,
-      options: voting.voting_options.map((vo: any) => ({
+      options: voting.voting_options.sort((a: any, b: any) => a.id - b.id).map((vo: any) => ({
         name: vo.name,
         description: vo.description
       })),
-      results: voting.voting_options.map((vo: any) => vo.votes)
+      results: voting.voting_options.sort((a: any, b: any) => a.id - b.id).map((vo: any) => vo.votes)
     };
   } catch (error) {
     console.error('Error getting voting by ID:', error);
