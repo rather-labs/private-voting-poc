@@ -3,6 +3,14 @@ import type { CompiledCircuit, InputMap, ProofData } from '@noir-lang/types';
 import { UltraHonkBackend } from '@aztec/bb.js';
 import toast from "react-hot-toast";
 
+
+export function concatenatePublicInputs(publicInputs: string[]): string {
+  return `0x${publicInputs.map(n => {
+    const hex = n.padStart(16, '0');
+    return hex.length > 16 ? hex.slice(-16) : hex;
+  }).join('')}`;
+}
+
 export async function generateProof(circuit: CompiledCircuit, inputs: InputMap ): Promise<ProofData> {
   try {
     toast.loading("Generating noir circuit... ⏳", {duration: 1_000_000, id: "toast-message"});

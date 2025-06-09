@@ -10,6 +10,7 @@ import type { Voting } from "../server/db/voting-db";
 import JwtCircuitJSON from '@/public/circuit/jwtnoir.json' assert { type: 'json' };
 import Tooltip from "./Tooltip";
 import { tooltipTexts } from "../utils/tooltipTexts";
+import { concatenatePublicInputs } from "../utils/noir";
 
 interface ExtendedSession {
   idToken?: string;
@@ -100,10 +101,11 @@ export default function VotingProofGeneration({ voting, setVoting }: ProofGenera
       // Add election index to inputs
       inputs.election_id = Number(params.id);
       const generatedProof = await generateProof(JwtCircuitJSON as CompiledCircuit, inputs as InputMap);
-      
       setProof(generatedProof);
+
       // Check if the nullifier has already voted
-      await checkNullifier(generatedProof.publicInputs[1]);
+      const nullifier = concatenatePublicInputs(generatedProof.publicInputs.slice(1));
+      await checkNullifier(nullifier);
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : "Failed to generate proof";
       setError(errorMessage);

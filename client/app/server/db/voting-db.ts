@@ -8,6 +8,7 @@ import { createClient } from '@supabase/supabase-js';
 import { addActiveVoting, addInactiveVoting, checkExpiredVotings } from './voting-status';
 
 import JwtCircuitJSON from '@/public/circuit/jwtnoir.json' assert { type: 'json' };
+import { concatenatePublicInputs } from '@/app/utils/noir';
 
 // Initialize Supabase client
 const supabase = createClient(
@@ -262,11 +263,13 @@ export async function addVote(electionId: number, proof: ProofData, selectedOpti
       throw new Error('Invalid proof submitted');
     }
 
+    const nullifier = concatenatePublicInputs(proof.publicInputs.slice(1));
+
     // Check if the nullifier already exists
     const { data: existingNullifier, error: nullifierError } = await supabase
       .from('nullifiers')
       .select()
-      .eq('nullifier', proof.publicInputs[1])
+      .eq('nullifier', nullifier)
       .eq('voting_id', electionId)
       .single();
 
@@ -288,7 +291,7 @@ export async function addVote(electionId: number, proof: ProofData, selectedOpti
 
     // Start a transaction
     const { error: transactionError } = await supabase.rpc('add_vote', {
-      p_nullifier: proof.publicInputs[1],
+      p_nullifier: nullifier,
       p_voting_id: electionId,
       p_option_id: votingOption.id
     });
