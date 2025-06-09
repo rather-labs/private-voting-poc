@@ -154,9 +154,6 @@ export default function VotingProofGeneration({ voting, setVoting }: ProofGenera
   return (
     <div className="space-y-4">
       <div>
-        <label htmlFor="voting-option" className="block text-sm font-medium text-black mb-1">
-          Select your vote
-        </label>
         <select
           id="voting-option"
           value={selectedOption === null ? '' : selectedOption}

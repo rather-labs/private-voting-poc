@@ -98,8 +98,16 @@ export default function VotingPage() {
                   </div>
                   {voting.maxVoters && (
                     <div>
-                      <span className="font-medium text-black">Maximum Voters:</span>{" "}
+                      <span className="font-medium text-black">Maximum Total Voters:</span>{" "}
                       {voting.maxVoters}
+                      <p className="text-sm text-black mt-1">Election will close when this number of voters is reached</p>
+                    </div>
+                  )}
+                  {voting.voteThreshold && (
+                    <div>
+                      <span className="font-medium text-black">Votes to win:</span>{" "}
+                      {voting.voteThreshold}
+                      <p className="text-sm text-black mt-1">Election will end when any option reaches this number of votes</p>
                     </div>
                   )}
                 </div>
