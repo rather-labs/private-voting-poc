@@ -3,7 +3,7 @@
 import { SessionProvider } from "next-auth/react";
 import { useState, useEffect } from 'react'
 import { ThemeProvider } from './components/ThemeProvider';
-import { ThemeToggle } from './components/ThemeToggle';
+import { FloatingActions } from './components/FloatingActions';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false)
@@ -20,7 +20,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <ThemeProvider>
       <SessionProvider>
         {children}
-        <ThemeToggle />
+        <FloatingActions />
       </SessionProvider>
     </ThemeProvider>
   );
