@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import Navbar from "./components/Navbar";
 import type { Voting } from "./server/db/voting-db";
@@ -8,10 +8,112 @@ import { formatLocalDate } from "./utils/locale";
 import Tooltip from "./components/Tooltip";
 import { tooltipTexts } from "./utils/tooltipTexts";
 
+interface VotingGridProps {
+  filteredVotings: Voting[];
+  title: string;
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+  currentPage: number;
+  setCurrentPage: (page: number) => void;
+  totalPages: number;
+  allVotings: Voting[];
+}
+
+const VotingGrid = ({ 
+  filteredVotings, 
+  title, 
+  searchQuery, 
+  setSearchQuery, 
+  currentPage, 
+  setCurrentPage, 
+  totalPages,
+  allVotings
+}: VotingGridProps) => (
+  <div className="mb-12">
+    <div className="flex justify-between items-center mb-6">
+      <h2 className="text-2xl font-bold text-black">{title}</h2>
+      <div className="flex items-center space-x-2">
+        <input
+          type="text"
+          placeholder={`Search ${title.toLowerCase()}...`}
+          value={searchQuery}
+          onChange={(e) => {
+            const value = e.target.value;
+            setSearchQuery(value);
+            setCurrentPage(1);
+          }}
+          className="px-2 py-1 text-sm border rounded-md text-black placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-indigo-500 w-48"
+        />
+        <div className="flex items-center space-x-1">
+          <button
+            type="button"
+            onClick={() => setCurrentPage(Math.max(currentPage - 1, 1))}
+            disabled={currentPage === 1 || filteredVotings.length === 0}
+            className="px-2 py-1 text-sm border rounded-md text-black disabled:opacity-50"
+          >
+            ←
+          </button>
+          <span className="px-1 text-sm text-black">
+            {filteredVotings.length === 0 ? "0/0" : `${currentPage}/${totalPages}`}
+          </span>
+          <button
+            type="button"
+            onClick={() => setCurrentPage(Math.min(currentPage + 1, totalPages))}
+            disabled={currentPage === totalPages || filteredVotings.length === 0}
+            className="px-2 py-1 text-sm border rounded-md text-black disabled:opacity-50"
+          >
+            →
+          </button>
+        </div>
+      </div>
+    </div>
+    {filteredVotings.length === 0 ? (
+      <div className="text-center text-black">No {title.toLowerCase()} at the moment</div>
+    ) : (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredVotings.map((voting) => (
+          <Link
+            key={allVotings.indexOf(voting)+1}
+            href={`/voting/${allVotings.indexOf(voting)+1}`}
+            className="block bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
+          >
+            <div className="p-6">
+              <h3 className="text-xl font-semibold text-black mb-2">
+                {voting.title}
+              </h3>
+              <p className="text-black mb-4 line-clamp-2">
+                {voting.description}
+              </p>
+              <div className="flex justify-between text-sm text-black">
+                <div>Start: {formatLocalDate(voting.startDate)}</div>
+              </div>
+              <div className="flex justify-between text-sm text-black">
+                <div>End: {formatLocalDate(voting.endDate)}</div>
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+    )}
+  </div>
+);
+
 export default function Home() {
   const [votings, setVotings] = useState<Voting[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // Separate search queries for each section
+  const [activeSearch, setActiveSearch] = useState("");
+  const [pendingSearch, setPendingSearch] = useState("");
+  const [closedSearch, setClosedSearch] = useState("");
+  
+  // Separate pagination for each section
+  const [activePage, setActivePage] = useState(1);
+  const [pendingPage, setPendingPage] = useState(1);
+  const [closedPage, setClosedPage] = useState(1);
+  
+  const itemsPerPage = 6;
 
   useEffect(() => {
     async function fetchVotings() {
@@ -32,39 +134,27 @@ export default function Home() {
     fetchVotings();
   }, []);
 
-  const VotingGrid = ({ filteredVotings, title }: { filteredVotings: Voting[], title: string }) => (
-    <div className="mb-12">
-      <h2 className="text-2xl font-bold text-black mb-6">{title}</h2>
-      {filteredVotings.length === 0 ? (
-        <div className="text-center text-black">No {title.toLowerCase()} at the moment</div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredVotings.map((voting) => (
-            <Link
-              key={votings.indexOf(voting)+1}
-              href={`/voting/${votings.indexOf(voting)+1}`}
-              className="block bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
-            >
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-black mb-2">
-                  {voting.title}
-                </h3>
-                <p className="text-black mb-4 line-clamp-2">
-                  {voting.description}
-                </p>
-                <div className="flex justify-between text-sm text-black">
-                  <div>Start: {formatLocalDate(voting.startDate)}</div>
-                </div>
-                <div className="flex justify-between text-sm text-black">
-                  <div>End: {formatLocalDate(voting.endDate)}</div>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
-    </div>
-  );
+  // Filter and paginate votings for each section
+  const getFilteredAndPaginatedVotings = useCallback((status: string, searchQuery: string, currentPage: number) => {
+    const filtered = votings.filter((voting) => 
+      voting.status === status && (
+        voting.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        voting.description.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+    
+    const totalPages = Math.ceil(filtered.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return {
+      votings: filtered.slice(startIndex, startIndex + itemsPerPage),
+      totalPages
+    };
+  }, [votings]);
+
+  // Prepare data for each section
+  const activeData = getFilteredAndPaginatedVotings('active', activeSearch, activePage);
+  const pendingData = getFilteredAndPaginatedVotings('pending', pendingSearch, pendingPage);
+  const closedData = getFilteredAndPaginatedVotings('closed', closedSearch, closedPage);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -89,9 +179,38 @@ export default function Home() {
             <div className="text-center text-red-600">{error}</div>
           ) : (
             <>
-              <VotingGrid filteredVotings={votings.filter((v: Voting) => v.status === 'active')} title="Open Elections" />
-              <VotingGrid filteredVotings={votings.filter((v: Voting) => v.status === 'pending')} title="Upcoming Elections" />
-              <VotingGrid filteredVotings={votings.filter((v: Voting) => v.status === 'closed')} title="Closed Elections" />
+              <VotingGrid 
+                filteredVotings={activeData.votings}
+                title="Open Elections"
+                searchQuery={activeSearch}
+                setSearchQuery={setActiveSearch}
+                currentPage={activePage}
+                setCurrentPage={setActivePage}
+                totalPages={activeData.totalPages}
+                allVotings={votings}
+              />
+
+              <VotingGrid 
+                filteredVotings={pendingData.votings}
+                title="Upcoming Elections"
+                searchQuery={pendingSearch}
+                setSearchQuery={setPendingSearch}
+                currentPage={pendingPage}
+                setCurrentPage={setPendingPage}
+                totalPages={pendingData.totalPages}
+                allVotings={votings}
+              />
+
+              <VotingGrid 
+                filteredVotings={closedData.votings}
+                title="Closed Elections"
+                searchQuery={closedSearch}
+                setSearchQuery={setClosedSearch}
+                currentPage={closedPage}
+                setCurrentPage={setClosedPage}
+                totalPages={closedData.totalPages}
+                allVotings={votings}
+              />
             </>
           )}
         </div>
