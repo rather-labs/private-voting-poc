@@ -21,27 +21,21 @@ export async function initializeDatabase() {
     // Create votings table
     const { error: votingsError } = await supabase.rpc('create_votings_table');
     if (votingsError) {
-      console.error('Error creating votings table:', votingsError);
       throw votingsError;
     }
 
     // Create voting_options table
     const { error: optionsError } = await supabase.rpc('create_voting_options_table');
     if (optionsError) {
-      console.error('Error creating voting_options table:', optionsError);
       throw optionsError;
     }
 
     // Create nullifiers table
     const { error: nullifiersError } = await supabase.rpc('create_nullifiers_table');
     if (nullifiersError) {
-      console.error('Error creating nullifiers table:', nullifiersError);
       throw nullifiersError;
     }
-
-    console.log('Database tables initialized successfully');
   } catch (error) {
-    console.error('Error initializing database:', error);
     throw new Error('Failed to initialize database');
   }
 }
@@ -164,10 +158,6 @@ export async function addVoting(voting: Voting): Promise<Voting> {
     const currentDate = new Date();
     const beginDate = new Date(voting.startDate); // Convert to UTC
     const endDate = new Date(voting.endDate); // Convert to UTC
-    console.log(beginDate);
-    console.log(endDate);
-    console.log(currentDate);
-
     if (beginDate >= endDate) {
       throw new Error('Start date must be before end date');
     }

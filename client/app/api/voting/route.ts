@@ -31,7 +31,6 @@ export async function GET(request: Request) {
     const votings = await getVotings();
     return NextResponse.json(votings);
   } catch (error) {
-    console.error('Error in GET /api/voting:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -97,7 +96,6 @@ export async function PATCH(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error in PATCH /api/voting:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

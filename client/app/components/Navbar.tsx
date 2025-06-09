@@ -33,7 +33,7 @@ export default function Navbar() {
                 className="rounded-full"
               />
               <Tooltip text={tooltipTexts.title} showIcon position="bottom-right">
-                <span className="text-xl font-bold text-gray-800">
+                <span className="text-xl font-bold text-black">
                   Rather Labs Private Voting PoC
                 </span>
               </Tooltip>
@@ -57,10 +57,10 @@ export default function Navbar() {
                     />
                   )}
                   <div className="flex flex-col">
-                    <span className="text-sm font-medium text-gray-700">
+                    <span className="text-sm font-medium text-black">
                       {session.user?.name}
                     </span>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-black">
                       {session.user?.email}
                     </span>
                   </div>

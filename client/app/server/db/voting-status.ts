@@ -9,7 +9,7 @@ export async function initializeActiveVotings() {
   const votings = await getVotings();
   activeVotingIds = votings
     .filter((voting: Voting) => voting.status === 'active')
-    .sort((a: Voting, b: Voting) => new Date(`${a.endDate}Z`).getTime() - new Date(`${b.endDate}Z`).getTime())
+    .sort((a: Voting, b: Voting) => (new Date(a.endDate)).getTime() - (new Date(b.endDate)).getTime())
     .map((voting: Voting) => voting.id)
     .filter((id): id is number => id !== undefined);
 }
@@ -18,19 +18,19 @@ export async function initializeInactiveVotings() {
   const votings = await getVotings();
   inactiveVotingIds = votings
     .filter((voting: Voting) => voting.status !== 'active')
-    .sort((a: Voting, b: Voting) => new Date(`${a.startDate}Z`).getTime() - new Date(`${b.startDate}Z`).getTime())
+    .sort((a: Voting, b: Voting) => (new Date(a.startDate)).getTime() - (new Date(b.startDate)).getTime())
     .map((voting: Voting) => voting.id)
     .filter((id): id is number => id !== undefined);
 }
 
 // Add a new voting to the active list
 export async function addActiveVoting(id: number, endDate: string) {
-  const endDateTime = new Date(`${endDate}Z`).getTime();
+  const endDateTime = new Date(endDate).getTime();
   const votings = await getVotings();
   const insertIndex = activeVotingIds.findIndex(
     votingId => {
       const voting = votings.find(v => v.id === votingId);
-      return voting && new Date(`${voting.endDate}Z`).getTime() > endDateTime;
+      return voting && new Date(voting.endDate).getTime() > endDateTime;
     }
   );
   
@@ -43,12 +43,12 @@ export async function addActiveVoting(id: number, endDate: string) {
 
 // Add a new voting to the inactive list
 export async function addInactiveVoting(id: number, beginDate: string) {
-  const beginDateTime = new Date(`${beginDate}Z`).getTime();
+  const beginDateTime = new Date(beginDate).getTime();
   const votings = await getVotings();
   const insertIndex = inactiveVotingIds.findIndex(
     votingId => {
       const voting = votings.find(v => v.id === votingId);
-      return voting && new Date(`${voting.startDate}Z`).getTime() > beginDateTime;
+      return voting && new Date(voting.startDate).getTime() > beginDateTime;
     }
   );
   
@@ -71,25 +71,19 @@ export async function checkExpiredVotings() {
     const voting = votings.find(v => v.id === votingId);
     
     if (voting) {
+      let shouldClose = new Date(voting.endDate) <= now; // Time expired
+      if (voting.voteThreshold !== undefined && voting.voteThreshold > 0) { // Threshold reached
+        shouldClose = shouldClose || voting.results.some(votes => votes >= (voting.voteThreshold as number)); 
+      }
 
-      const shouldClose = 
-        new Date(voting.endDate)<= now || // Time expired
-        (voting.voteThreshold !== undefined 
-          && voting.voteThreshold > 0 
-          // biome-ignore lint/style/noNonNullAssertion: <explanation>
-          && voting.results.some(votes => votes >= voting.voteThreshold!)) || // Threshold reached
-        (voting.maxVoters !== undefined 
-          && voting.maxVoters > 0 
-          && voting.results.reduce((a, b) => a + b, 0) >= voting.maxVoters); // Max voters reached
-      
+      if (voting.maxVoters !== undefined && voting.maxVoters > 0) { // Max voters reached
+        shouldClose = shouldClose || voting.results.reduce((a, b) => a + b, 0) >= voting.maxVoters;
+      }
       
       if (shouldClose) {
         expiredIds.push(i);
         await closeVoting(votingId);
-      } else if (new Date(voting.endDate) > now) {
-        // Since the array is sorted, we can stop checking once we find a non-expired voting
-        break;
-      }
+      } 
     }
   }
 
@@ -117,7 +111,7 @@ export async function checkBeginVotings() {
         new Date(voting.startDate) <= now && 
         new Date(voting.endDate) > now &&
         (!voting.maxVoters || voting.results.reduce((a, b) => a + b, 0) < voting.maxVoters) &&
-        (!voting.voteThreshold || voting.results.some(votes => votes >= voting.voteThreshold!))
+        (!voting.voteThreshold || voting.results.some(votes => votes >= (voting.voteThreshold as number)))
     ) {
       // Open the voting
       await openVoting(votingId); // This will update the status to 'active'
@@ -142,5 +136,5 @@ export async function startExpirationChecker() {
   setInterval(async () => {
     await checkBeginVotings();
     await checkExpiredVotings();
-  }, 60000);
+  }, 60_000);
 } 

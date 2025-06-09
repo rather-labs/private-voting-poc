@@ -32,14 +32,9 @@ export default function VotingProofGeneration({ voting, setVoting }: ProofGenera
   const [isGeneratingProof, setIsGeneratingProof] = useState(false);
   const [isSubmittingVote, setIsSubmittingVote] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [hasVoted, setHasVoted] = useState(false);
-
-  useEffect(() => {
-    if (hasVoted) {
-      setError('You have already cast a vote in this election');
-    }
-  }, [hasVoted]);
 
   async function getInputs() {
     if (status === "authenticated" && session) {
@@ -72,7 +67,6 @@ export default function VotingProofGeneration({ voting, setVoting }: ProofGenera
         });
         return generatedInputs;
       } catch (err: unknown) {
-        console.error("Error getting inputs:", err);
         const errorMessage = err instanceof Error ? err.message : "Failed to get inputs";
         setError(errorMessage);
         return null;
@@ -90,6 +84,9 @@ export default function VotingProofGeneration({ voting, setVoting }: ProofGenera
       }
       const { hasVoted } = await response.json();
       setHasVoted(hasVoted);
+      if (hasVoted) {
+        setMessage('This account has already cast a vote in this election');
+      } 
     } catch (err) {
       console.error('Error checking nullifier:', err);
       setError(err instanceof Error ? err.message : 'Failed to check if you have voted');
@@ -147,6 +144,7 @@ export default function VotingProofGeneration({ voting, setVoting }: ProofGenera
       const updatedVoting = await fetch(`/api/voting?id=${Number(params.id)}`).then(res => res.json());
       setVoting(updatedVoting);      
       setHasVoted(true);
+      setMessage('Your vote has been submitted');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to submit vote');
     } finally {
@@ -157,19 +155,19 @@ export default function VotingProofGeneration({ voting, setVoting }: ProofGenera
   return (
     <div className="space-y-4">
       <div>
-        <label htmlFor="voting-option" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="voting-option" className="block text-sm font-medium text-black mb-1">
           Select your vote
         </label>
         <select
           id="voting-option"
-          value={selectedOption || ''}
+          value={selectedOption === null ? '' : selectedOption}
           disabled={isSubmittingVote || hasVoted}
           onChange={(e) => setSelectedOption(Number(e.target.value))}
-          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm text-black"
         >
-          <option value="">Choose an option</option>
+          <option value="" className="text-black">Choose an option</option>
           {voting.options.map((option, index) => (
-            <option key={option.name} value={index}>
+            <option key={option.name} value={index} className="text-black">
               {option.name}
             </option>
           ))}
@@ -201,11 +199,16 @@ export default function VotingProofGeneration({ voting, setVoting }: ProofGenera
           </Tooltip>
         </div>
       ) : (
-        <div className="text-sm text-gray-500">
+        <div className="text-sm text-black">
           Please sign in to vote
         </div>
       )}
 
+      {hasVoted && (
+        <div className="text-sm text-black">
+          {message}
+        </div>
+      )}
       {error && (
         <div className="text-sm text-red-600">
           {error}

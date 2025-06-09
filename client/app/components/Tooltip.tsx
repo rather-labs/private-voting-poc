@@ -41,7 +41,7 @@ export default function Tooltip({ text, children, position = 'bottom', showIcon 
         >
           <div className="inline-flex items-center">
             <svg
-              className="h-4 w-4 text-gray-400 hover:text-gray-500 cursor-help"
+              className="h-4 w-4 text-black hover:text-black cursor-help"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"

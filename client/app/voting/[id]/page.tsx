@@ -66,7 +66,7 @@ export default function VotingPage() {
       case 'closed':
         return 'bg-red-100 text-red-800 border-red-200';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return 'bg-gray-100 text-black border-gray-200';
     }
   }
 
@@ -78,27 +78,27 @@ export default function VotingPage() {
         <div className="px-4 py-6 sm:px-0">
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
-              <h1 className="text-3xl font-bold text-gray-900">{voting.title}</h1>
+              <h1 className="text-3xl font-bold text-black">{voting.title}</h1>
               <div className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(voting.status)}`}>
                 {voting.status === 'active' ? 'Open' : voting.status === 'pending' ? 'Upcoming' : 'Closed'}
               </div>
             </div>
             <div className="mb-8">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Election Details</h2>
+              <h2 className="text-xl font-semibold text-black mb-4">Election Details</h2>
               <div className="bg-white p-4 rounded-lg shadow">
-                <p className="text-gray-600 mb-4">{voting.description}</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <p className="text-black mb-4">{voting.description}</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-black">
                   <div>
-                    <span className="font-medium">Start Date:</span>{" "}
+                    <span className="font-medium text-black">Start Date:</span>{" "}
                     {formatLocalDate(voting.startDate)}
                   </div>
                   <div>
-                    <span className="font-medium">End Date:</span>{" "}
+                    <span className="font-medium text-black">End Date:</span>{" "}
                     {formatLocalDate(voting.endDate)}
                   </div>
                   {voting.maxVoters && (
                     <div>
-                      <span className="font-medium">Maximum Voters:</span>{" "}
+                      <span className="font-medium text-black">Maximum Voters:</span>{" "}
                       {voting.maxVoters}
                     </div>
                   )}
@@ -108,12 +108,12 @@ export default function VotingPage() {
 
             {/* Voting Options */}
             <div className="mb-8">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Voting Options</h2>
+              <h2 className="text-xl font-semibold text-black mb-4">Voting Options</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {voting.options.map((option, index) => (
                   <div key={`${option.name}-${index}`} className="bg-white p-4 rounded-lg shadow">
-                    <h3 className="font-medium text-gray-900">{option.name}</h3>
-                    <p className="text-gray-600 text-sm">{option.description}</p>
+                    <h3 className="font-medium text-black">{option.name}</h3>
+                    <p className="text-black text-sm">{option.description}</p>
                   </div>
                 ))}
               </div>
@@ -122,7 +122,7 @@ export default function VotingPage() {
             {/* Results Section - Only show if results are public or voting is closed */}
             {(voting.isPublic || voting.status === 'closed') && (
               <div className="mb-8">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                <h2 className="text-xl font-semibold text-black mb-4">
                   {voting.status === 'closed' ? "Results" : "Current Votes"}
                 </h2>
                 <div className="bg-white p-4 rounded-lg shadow">
@@ -130,7 +130,7 @@ export default function VotingPage() {
                     const totalVotes = voting.results.reduce((sum, votes) => sum + votes, 0);
                     return (
                       <>
-                        <div className="mb-2">Total Votes: {totalVotes}</div>
+                        <div className="mb-2 text-black">Total Votes: {totalVotes}</div>
                         <div className="space-y-2">
                           {voting.results.map((votes, index) => {
                             const option = voting.options[index];
@@ -142,14 +142,14 @@ export default function VotingPage() {
                             
                             return (
                               <div key={`${option.name}-${index}`} className="flex items-center gap-2">
-                                <div className="w-32 font-medium">{option.name}:</div>
+                                <div className="w-32 font-medium text-black">{option.name}:</div>
                                 <div className="flex-1 h-4 bg-gray-200 rounded-full overflow-hidden">
                                   <div 
                                     className="h-full bg-purple-600 rounded-full transition-all duration-300"
                                     style={{ width: `${percentage}%`, maxWidth: '100%' }}
                                   />
                                 </div>
-                                <div className="w-20 text-right text-sm">
+                                <div className="w-20 text-right text-sm text-black">
                                   {votes} ({displayPercentage}%)
                                 </div>
                               </div>
@@ -165,7 +165,7 @@ export default function VotingPage() {
           </div>
           {voting.status === 'active' && (
             <div className="mb-8">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Cast your vote</h2>
+              <h2 className="text-xl font-semibold text-black mb-4">Cast your vote</h2>
               <div className="bg-white p-4 rounded-lg shadow">
                 <VotingProofGeneration voting={voting} setVoting={setVoting} />
               </div>

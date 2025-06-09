@@ -11,9 +11,9 @@ import { tooltipTexts } from "./utils/tooltipTexts";
 function VotingCard({ voting }: { voting: Voting }) {
   return (
     <div className="bg-white rounded-lg shadow p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-2">{voting.title}</h3>
-      <p className="text-gray-600 text-sm mb-4 line-clamp-2">{voting.description}</p>
-      <div className="grid grid-cols-2 gap-4 text-sm text-gray-500 mb-4">
+      <h3 className="text-lg font-semibold text-black mb-2">{voting.title}</h3>
+      <p className="text-black text-sm mb-4 line-clamp-2">{voting.description}</p>
+      <div className="grid grid-cols-2 gap-4 text-sm text-black mb-4">
         <div>
           <span className="font-medium">Start:</span><br />
           {formatLocalDate(voting.startDate)}
@@ -68,9 +68,9 @@ export default function Home() {
 
   const VotingGrid = ({ filteredVotings, title }: { filteredVotings: Voting[], title: string }) => (
     <div className="mb-12">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">{title}</h2>
+      <h2 className="text-2xl font-bold text-black mb-6">{title}</h2>
       {filteredVotings.length === 0 ? (
-        <div className="text-center text-gray-600">No {title.toLowerCase()} at the moment</div>
+        <div className="text-center text-black">No {title.toLowerCase()} at the moment</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredVotings.map((voting) => (
@@ -80,16 +80,16 @@ export default function Home() {
               className="block bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
             >
               <div className="p-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                <h3 className="text-xl font-semibold text-black mb-2">
                   {voting.title}
                 </h3>
-                <p className="text-gray-600 mb-4 line-clamp-2">
+                <p className="text-black mb-4 line-clamp-2">
                   {voting.description}
                 </p>
-                <div className="flex justify-between text-sm text-gray-500">
+                <div className="flex justify-between text-sm text-black">
                   <div>Start: {formatLocalDate(voting.startDate)}</div>
                 </div>
-                <div className="flex justify-between text-sm text-gray-500">
+                <div className="flex justify-between text-sm text-black">
                   <div>End: {formatLocalDate(voting.endDate)}</div>
                 </div>
               </div>
@@ -106,7 +106,7 @@ export default function Home() {
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Elections</h1>
+            <h1 className="text-3xl font-bold text-black">Elections</h1>
             <Tooltip text={tooltipTexts.createElectionHome} showIcon>
               <Link
                 href="/create"
