@@ -174,7 +174,7 @@ export default function VotingProofGeneration({ voting, setVoting }: ProofGenera
 
       {status === "authenticated" ? (
         <div className="flex flex-col space-y-4">
-          <Tooltip text={tooltipTexts.generateProof} showIcon position="top-right">
+          <Tooltip text={tooltipTexts.generateProof} showIcon position="top-end">
             <button
               type="button"
               onClick={generateNoirProof}
@@ -185,7 +185,7 @@ export default function VotingProofGeneration({ voting, setVoting }: ProofGenera
             </button>
           </Tooltip>
 
-          <Tooltip text={tooltipTexts.verifyProof} showIcon position="top-right">
+          <Tooltip text={tooltipTexts.verifyProof} showIcon position="top-end">
             <button
               type="button"
               onClick={submitVote}

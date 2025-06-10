@@ -22,7 +22,7 @@ export default function Navbar() {
   return (
     <nav className="bg-white dark:bg-gray-900 shadow-lg border-b border-gray-200 dark:border-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:h-16 py-4 sm:py-0 gap-4 sm:gap-0">
           <div className="flex items-center space-x-4">
             <Link href="/" className="flex items-center space-x-2">
               <Image
@@ -32,7 +32,7 @@ export default function Navbar() {
                 height={32}
                 className="rounded-full"
               />
-              <Tooltip text={tooltipTexts.title} showIcon position="bottom-right">
+              <Tooltip text={tooltipTexts.title} showIcon position="bottom-end" mobilePosition="bottom-start">
                 <span className="text-xl font-bold text-gray-900 dark:text-white">
                   Rather Labs Private Voting PoC
                 </span>

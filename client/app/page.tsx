@@ -30,12 +30,12 @@ const VotingGrid = ({
   allVotings
 }: VotingGridProps) => (
   <div className="mb-12">
-    <div className="flex justify-between items-center mb-6">
+    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4 sm:gap-0">
       <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{title}</h2>
       <div className="flex items-center space-x-2">
         <input
           type="text"
-          placeholder={`Search elections...`}
+          placeholder="Search elections..."
           value={searchQuery}
           onChange={(e) => {
             const value = e.target.value;

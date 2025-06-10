@@ -337,7 +337,7 @@ export default function CreateVoting() {
             )}
 
             <div className="flex justify-end">
-              <Tooltip text={tooltipTexts.createElectionForm} showIcon position="top-left">
+              <Tooltip text={tooltipTexts.createElectionForm} showIcon position="top-start">
                 <button
                   type="submit"
                   disabled={loading}
