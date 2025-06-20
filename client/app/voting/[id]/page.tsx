@@ -31,6 +31,25 @@ export default function VotingPage() {
     }
 
     fetchVoting();
+    
+    // Calculate time until next minute starts
+    const now = new Date();
+    const secondsUntilNextMinute = 65 - now.getSeconds(); // Checks five seconds after the minute starts
+    const millisecondsUntilNextMinute = secondsUntilNextMinute * 1000;
+    
+    // Set initial timeout to start at the beginning of the next minute
+    const initialTimeout = setTimeout(() => {
+      fetchVoting(); // Fetch immediately at the start of the minute
+      
+      // Then set up interval for every minute after that
+      const interval = setInterval(fetchVoting, 60000);
+      
+      // Cleanup interval on unmount
+      return () => clearInterval(interval);
+    }, millisecondsUntilNextMinute);
+    
+    // Cleanup timeout on unmount
+    return () => clearTimeout(initialTimeout);
   }, [params.id]);
 
   if (loading) {

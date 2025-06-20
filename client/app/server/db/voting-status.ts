@@ -132,9 +132,21 @@ export async function startExpirationChecker() {
   await checkBeginVotings();
   await checkExpiredVotings();
   
-  // Then check every minute
-  setInterval(async () => {
+  // Calculate time until next minute starts
+  const now = new Date();
+  const secondsUntilNextMinute = 60 - now.getSeconds();
+  const millisecondsUntilNextMinute = secondsUntilNextMinute * 1000;
+  
+  // Set initial timeout to start at the beginning of the next minute
+  setTimeout(async () => {
+    // Check immediately at the start of the minute
     await checkBeginVotings();
     await checkExpiredVotings();
-  }, 60_000);
+    
+    // Then set up interval for every minute after that
+    setInterval(async () => {
+      await checkBeginVotings();
+      await checkExpiredVotings();
+    }, 60_000);
+  }, millisecondsUntilNextMinute);
 } 

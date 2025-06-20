@@ -73,8 +73,8 @@ const VotingGrid = ({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredVotings.map((voting) => (
           <Link
-            key={allVotings.indexOf(voting)+1}
-            href={`/voting/${allVotings.indexOf(voting)+1}`}
+            key={voting.id}
+            href={`/voting/${voting.id}`}
             className="block bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md dark:shadow-gray-900/20 dark:hover:shadow-gray-900/40 transition-all duration-200 border border-gray-200 dark:border-gray-700 cursor-default hover:scale-105 hover:-translate-y-1"
           >
             <div className="p-6">
@@ -98,10 +98,18 @@ const VotingGrid = ({
   </div>
 );
 
+type VotingData = {
+  votings: Voting[];
+  totalPages: number;
+}
+
 export default function Home() {
   const [votings, setVotings] = useState<Voting[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeData, setActiveData] = useState<VotingData>({ votings: [], totalPages: 0 });
+  const [pendingData, setPendingData] = useState<VotingData>({ votings: [], totalPages: 0 });
+  const [closedData, setClosedData] = useState<VotingData>({ votings: [], totalPages: 0 });
   
   // Separate search queries for each section
   const [activeSearch, setActiveSearch] = useState("");
@@ -115,31 +123,25 @@ export default function Home() {
   
   const itemsPerPage = 6;
 
-  useEffect(() => {
-    async function fetchVotings() {
-      try {
-        const response = await fetch('/api/voting');
-        if (!response.ok) {
-          throw new Error('Failed to fetch votings');
-        }
-        const data = await response.json();
-        setVotings(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load votings');
-      } finally {
-        setLoading(false);
+  const fetchVotings = useCallback(async () => {
+    try {
+      const response = await fetch('/api/voting');
+      if (!response.ok) {
+        throw new Error('Failed to fetch votings');
       }
+      const data = await response.json();
+      setVotings(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load votings');
+    } finally {
+      setLoading(false);
     }
-
-    fetchVotings();
   }, []);
 
   // Filter and paginate votings for each section
   const getFilteredAndPaginatedVotings = useCallback((status: string, searchQuery: string, currentPage: number) => {
     const filtered = votings.filter((voting) => 
-      voting.status === status && (
-        voting.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        voting.description.toLowerCase().includes(searchQuery.toLowerCase())
+      voting.status === status && voting.title.toLowerCase().includes(searchQuery.toLowerCase()
       )
     );
     
@@ -151,10 +153,37 @@ export default function Home() {
     };
   }, [votings]);
 
-  // Prepare data for each section
-  const activeData = getFilteredAndPaginatedVotings('active', activeSearch, activePage);
-  const pendingData = getFilteredAndPaginatedVotings('pending', pendingSearch, pendingPage);
-  const closedData = getFilteredAndPaginatedVotings('closed', closedSearch, closedPage);
+  useEffect(() => {
+    fetchVotings();
+
+    // Prepare data for each section
+    setActiveData(getFilteredAndPaginatedVotings('active', activeSearch, activePage));
+    setPendingData(getFilteredAndPaginatedVotings('pending', pendingSearch, pendingPage));
+    setClosedData(getFilteredAndPaginatedVotings('closed', closedSearch, closedPage));
+    // Calculate time until next minute starts
+    const now = new Date();
+    const secondsUntilNextMinute = 65 - now.getSeconds(); // Checks five seconds after the minute starts
+    const millisecondsUntilNextMinute = secondsUntilNextMinute * 1000;
+    
+    // Set initial timeout to start at the beginning of the next minute
+    const initialTimeout = setTimeout(() => {
+      fetchVotings(); // Fetch immediately at the start of the minute
+      
+      // Then set up interval for every minute after that
+      const interval = setInterval(() => {
+        fetchVotings();
+        setActiveData(getFilteredAndPaginatedVotings('active', activeSearch, activePage));
+        setPendingData(getFilteredAndPaginatedVotings('pending', pendingSearch, pendingPage));
+        setClosedData(getFilteredAndPaginatedVotings('closed', closedSearch, closedPage));
+      }, 60000);
+      
+      // Cleanup interval on unmount
+      return () => clearInterval(interval);
+    }, millisecondsUntilNextMinute);
+    
+    // Cleanup timeout on unmount
+    return () => clearTimeout(initialTimeout);
+  }, [fetchVotings, activePage, pendingPage, closedPage, activeSearch, pendingSearch, closedSearch, getFilteredAndPaginatedVotings]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
