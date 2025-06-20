@@ -75,7 +75,7 @@ const VotingGrid = ({
           <Link
             key={allVotings.indexOf(voting)+1}
             href={`/voting/${allVotings.indexOf(voting)+1}`}
-            className="block bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md dark:shadow-gray-900/20 dark:hover:shadow-gray-900/40 transition-shadow duration-200 border border-gray-200 dark:border-gray-700"
+            className="block bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md dark:shadow-gray-900/20 dark:hover:shadow-gray-900/40 transition-all duration-200 border border-gray-200 dark:border-gray-700 cursor-default hover:scale-105 hover:-translate-y-1"
           >
             <div className="p-6">
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
@@ -166,7 +166,7 @@ export default function Home() {
             <Tooltip text={tooltipTexts.createElectionHome} showIcon>
               <Link
                 href="/create"
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-gray-900 dark:text-white bg-indigo-100 dark:bg-indigo-700 hover:bg-indigo-200 dark:hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition-colors"
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-gray-900 dark:text-white bg-indigo-100 dark:bg-indigo-700 hover:bg-indigo-200 dark:hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition-colors cursor-default"
               >
                 Create New Election
               </Link>

@@ -4,7 +4,7 @@ It provides an example of using **noir circuits** with the **noir-jwt** library.
 This library allows the generation of proofs from any JWT. 
 In this case the **login token** with a **google account** is used.
 This is **NOT** a production-ready application.
-You can check the circuits and app in our **[github repository](https://github.com/rather-labs/private-voting-poc)**`,
+You can check the circuits and app in our repository`,
   signIn: `Sign in to participate in elections.
 This will generate the JWT token that is used to generate the proof`,
   signOut: `Sign out of your account.

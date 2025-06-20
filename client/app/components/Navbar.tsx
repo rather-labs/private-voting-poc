@@ -69,7 +69,7 @@ export default function Navbar() {
                   <button
                     type="button"
                     onClick={handleSignOut}
-                    className="bg-red-100 hover:bg-red-200 dark:bg-red-600 dark:hover:bg-red-700 text-red-900 dark:text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                    className="bg-red-100 hover:bg-red-200 dark:bg-red-600 dark:hover:bg-red-700 text-red-900 dark:text-white px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-default"
                   >
                     Sign Out
                   </button>
@@ -80,7 +80,7 @@ export default function Navbar() {
                 <button
                   type="button"
                   onClick={() => signIn("google", { callbackUrl: window.location.pathname })}
-                  className="bg-blue-100 hover:bg-blue-200 dark:bg-blue-600 dark:hover:bg-blue-700 text-blue-900 dark:text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                  className="bg-blue-100 hover:bg-blue-200 dark:bg-blue-600 dark:hover:bg-blue-700 text-blue-900 dark:text-white px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-default"
                 >
                   Sign In
                 </button>

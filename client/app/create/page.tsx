@@ -21,9 +21,8 @@ function formatDateForInput(date: Date): string {
     day: '2-digit',
     hour: '2-digit',
     minute: '2-digit',
-    second: '2-digit',
     hour12: false
-  }).replace(/(\d+)\/(\d+)\/(\d+),\s(\d+):(\d+):(\d+)/, '$3-$1-$2T$4:$5:$6');
+  }).replace(/(\d+)\/(\d+)\/(\d+),\s(\d+):(\d+)/, '$3-$1-$2T$4:$5');
 }
 
 export default function CreateVoting() {
@@ -146,7 +145,7 @@ export default function CreateVoting() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       <Navbar />
-      <main className="max-w-3xl mx-auto py-6 sm:px-6 lg:px-8">
+      <main className="max-w-3xl mx-auto py-6 sm:px-6 lg:px-8 pb-20">
         <div className="px-4 py-6 sm:px-0">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Create New Election</h1>
           
@@ -278,7 +277,7 @@ export default function CreateVoting() {
                 <button
                   type="button"
                   onClick={addOption}
-                  className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-indigo-700 dark:text-indigo-300 bg-indigo-100 dark:bg-indigo-900 hover:bg-indigo-200 dark:hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition-colors"
+                  className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-indigo-700 dark:text-indigo-300 bg-indigo-100 dark:bg-indigo-900 hover:bg-indigo-200 dark:hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 transition-colors cursor-default"
                 >
                   Add Option
                 </button>
@@ -305,7 +304,7 @@ export default function CreateVoting() {
                         <button
                           type="button"
                           onClick={() => removeOption(index)}
-                          className="ml-4 inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-red-700 dark:text-red-300 bg-red-100 dark:bg-red-900 hover:bg-red-200 dark:hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-red-400 transition-colors"
+                          className="ml-4 inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-red-700 dark:text-red-300 bg-red-100 dark:bg-red-900 hover:bg-red-200 dark:hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-red-400 transition-colors cursor-default"
                         >
                           Remove
                         </button>
@@ -341,7 +340,7 @@ export default function CreateVoting() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="inline-flex justify-center rounded-md border border-transparent bg-indigo-100 dark:bg-indigo-700 py-2 px-4 text-sm font-medium text-gray-900 dark:text-white shadow-sm hover:bg-indigo-200 dark:hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:ring-offset-2 disabled:opacity-50 transition-colors"
+                  className="inline-flex justify-center rounded-md border border-transparent bg-indigo-100 dark:bg-indigo-700 py-2 px-4 text-sm font-medium text-gray-900 dark:text-white shadow-sm hover:bg-indigo-200 dark:hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:ring-offset-2 disabled:opacity-50 transition-colors cursor-default"
                 >
                   {loading ? "Creating..." : "Create Election"}
                 </button>

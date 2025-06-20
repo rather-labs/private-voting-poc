@@ -1,9 +1,46 @@
 "use client";
 
 import { useTheme } from './ThemeProvider';
+import { useState, useEffect } from 'react';
 
 export function FloatingActions() {
   const { theme, toggleTheme } = useTheme();
+  const [isFooterVisible, setIsFooterVisible] = useState(false);
+
+  useEffect(() => {
+    const checkFooterVisibility = () => {
+      const footer = document.querySelector('footer');
+      
+      if (footer) {
+        const footerRect = footer.getBoundingClientRect();
+        
+        // Check if footer is visible in viewport
+        const isFooterVisible = footerRect.top < window.innerHeight;
+        
+        if (isFooterVisible) {
+          // Calculate position to maintain 5px distance from footer top
+          const distanceFromFooter = 1;
+          const floatingIconsHeight = 16; // Approximate height of both icons + spacing
+          const bottomPosition = window.innerHeight - footerRect.top + distanceFromFooter + floatingIconsHeight;
+          document.documentElement.style.setProperty('--floating-icons-bottom', `${bottomPosition}px`);
+        } else {
+          // Default position when footer is not visible
+          document.documentElement.style.setProperty('--floating-icons-bottom', '16px');
+        }
+        
+        setIsFooterVisible(isFooterVisible);
+      }
+    };
+
+    checkFooterVisibility();
+    window.addEventListener('scroll', checkFooterVisibility);
+    window.addEventListener('resize', checkFooterVisibility);
+
+    return () => {
+      window.removeEventListener('scroll', checkFooterVisibility);
+      window.removeEventListener('resize', checkFooterVisibility);
+    };
+  }, []);
 
   const handleToggle = () => {
     console.log('Theme toggle clicked! Current theme:', theme);
@@ -11,13 +48,13 @@ export function FloatingActions() {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 flex flex-col space-y-3">
+    <div className="fixed right-4 z-50 flex flex-col space-y-3 transition-all duration-300" style={{ bottom: 'var(--floating-icons-bottom, 16px)' }}>
       {/* GitHub Link */}
       <a
         href="https://github.com/rather-labs/private-voting-poc"
         target="_blank"
         rel="noopener noreferrer"
-        className="p-3 rounded-full bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-200 hover:scale-105"
+        className="p-3 rounded-full bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-200 hover:scale-105 cursor-default"
         aria-label="View source code on GitHub"
       >
         <svg
@@ -35,7 +72,7 @@ export function FloatingActions() {
       <button
         type="button"
         onClick={handleToggle}
-        className="p-3 rounded-full bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-200 hover:scale-105"
+        className="p-3 rounded-full bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-200 hover:scale-105 cursor-default"
         aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
       >
         {theme === 'light' ? (
