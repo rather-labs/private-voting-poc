@@ -1,5 +1,6 @@
 use jwt::JWT;
-use std::hash::keccak;
+use std::hash::poseidon2;
+
 global MAX_DATA_LENGTH: u32 = 1024; // max length of signed data (headerb64 + "." + payloadb64)
 global MAX_STRING_LENGTH: u32 = 21; // max length for string claim
 
@@ -11,7 +12,7 @@ fn main(
     signature_limbs: [u128; 18],
     //email_extension: pub Field,
     election_id: pub Field
-) -> pub [u64; 25] {
+) -> pub Field {
     let jwt = JWT::init(
         data,
         base64_decode_offset,
@@ -42,13 +43,11 @@ fn main(
     
     // unique identifier
     let sub = jwt.get_claim_string::<3, MAX_STRING_LENGTH>("sub".as_bytes());
-    //println(f"sub: {sub}");
-    //println(sub.storage);
 
     // nullifier generation
-    let mut hashInput: [u64; 25] = [election_id as u64; 25];
-    let sub_storage = sub.storage();
-    for i in 0..MAX_STRING_LENGTH { hashInput[i] = sub_storage[i] as u64; }
-    let nullifier = keccak::keccakf1600(hashInput);
+    let mut hashInput: [Field; MAX_STRING_LENGTH+1] = [election_id; MAX_STRING_LENGTH+1];
+    for i in 0..MAX_STRING_LENGTH { hashInput[i] =  sub.storage()[i] as Field; }
+
+    let nullifier = poseidon2::Poseidon2::hash(hashInput, MAX_STRING_LENGTH+1);
     nullifier
 }

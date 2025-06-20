@@ -263,7 +263,7 @@ export async function addVote(electionId: number, proof: ProofData, selectedOpti
       throw new Error('Invalid proof submitted');
     }
 
-    const nullifier = concatenatePublicInputs(proof.publicInputs.slice(1));
+    const nullifier = proof.publicInputs[1];
 
     // Check if the nullifier already exists
     const { data: existingNullifier, error: nullifierError } = await supabase
