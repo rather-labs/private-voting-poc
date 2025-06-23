@@ -97,6 +97,9 @@ export default function VotingProofGeneration({ voting, setVoting }: ProofGenera
       setIsGeneratingProof(true);
       setError(null);
       const inputs = await getInputs() as InputMap;
+      if (!inputs) {
+        throw new Error("Failed to generate data from JWT, try logging out and back in. If the problem persists, add an issue on GitHub.");
+      }
       // Add election index to inputs
       inputs.election_id = Number(params.id);
       const generatedProof = await generateProof(JwtCircuitJSON as CompiledCircuit, inputs as InputMap);
